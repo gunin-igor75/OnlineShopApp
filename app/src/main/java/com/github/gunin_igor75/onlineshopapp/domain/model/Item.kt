@@ -12,5 +12,6 @@ data class Item(
     val available: Int,
     val description: String,
     val info: List<Info>,
-    val ingredients: String
+    val ingredients: String,
+    val isFavorite: Boolean
 )
