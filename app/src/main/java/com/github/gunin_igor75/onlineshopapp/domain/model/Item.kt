@@ -1,9 +1,7 @@
 package com.github.gunin_igor75.onlineshopapp.domain.model
 
-import java.util.UUID
-
 data class Item(
-    val id: UUID,
+    val id: String,
     val title: String,
     val subtitle: String,
     val price: Price,
@@ -13,5 +11,5 @@ data class Item(
     val description: String,
     val info: List<Info>,
     val ingredients: String,
-    val isFavorite: Boolean
+    val isFavorite: Boolean = false
 )

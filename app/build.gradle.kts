@@ -71,6 +71,17 @@ dependencies {
     implementation(libs.dagger.core)
     ksp(libs.dagger.compiler)
 
+    //mvikotlin
+    implementation(libs.mvikotlin.core)
+    implementation(libs.mvikotlin.main)
+    implementation(libs.mvikotlin.coroutines)
+
+    //decompose
+    implementation(libs.decompose.core)
+    implementation(libs.decompose.jetpack.compose)
+
+    //gson
+    implementation(libs.gson.core)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
