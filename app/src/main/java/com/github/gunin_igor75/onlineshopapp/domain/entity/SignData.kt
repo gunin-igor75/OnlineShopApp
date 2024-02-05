@@ -1,4 +1,4 @@
-package com.github.gunin_igor75.onlineshopapp.domain.model
+package com.github.gunin_igor75.onlineshopapp.domain.entity
 
 data class SignData(
     val name: String,

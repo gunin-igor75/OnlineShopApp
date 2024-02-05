@@ -6,7 +6,8 @@ import dagger.Component
 
 @Component(
     modules = [
-        DataModule::class
+        DataModule::class,
+        PresentationModule::class
     ]
 )
 @ApplicationScope
@@ -16,7 +17,7 @@ interface ApplicationComponent {
     interface Factory {
 
         fun create(
-           @BindsInstance context: Context
+            @BindsInstance context: Context
         ): ApplicationComponent
     }
 }

@@ -1,8 +1,8 @@
 package com.github.gunin_igor75.onlineshopapp.data.mapper
 
 import com.github.gunin_igor75.onlineshopapp.data.local.model.UserDbModel
-import com.github.gunin_igor75.onlineshopapp.domain.model.SignData
-import com.github.gunin_igor75.onlineshopapp.domain.model.User
+import com.github.gunin_igor75.onlineshopapp.domain.entity.SignData
+import com.github.gunin_igor75.onlineshopapp.domain.entity.User
 
 
 fun SignData.toUserDbModel(): UserDbModel {

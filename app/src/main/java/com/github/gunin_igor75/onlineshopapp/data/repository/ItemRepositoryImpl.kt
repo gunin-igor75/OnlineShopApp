@@ -6,7 +6,7 @@ import com.github.gunin_igor75.onlineshopapp.data.local.db.UserDao
 import com.github.gunin_igor75.onlineshopapp.data.local.model.ItemDbModel
 import com.github.gunin_igor75.onlineshopapp.data.local.model.UserItemDbModel
 import com.github.gunin_igor75.onlineshopapp.data.mapper.toItems
-import com.github.gunin_igor75.onlineshopapp.domain.model.Item
+import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
 import com.github.gunin_igor75.onlineshopapp.domain.repository.ItemRepository
 import com.github.gunin_igor75.onlineshopapp.utils.UIContentDto
 import com.github.gunin_igor75.onlineshopapp.utils.readJsonFromAssets
@@ -64,6 +64,26 @@ class ItemRepositoryImpl @Inject constructor(
         itemsChangeEvents.tryEmit(Unit)
     }
 
+    override fun getChoseFace() {
+        _dataList.filter { it.tags.contains(FACE) }
+        itemsChangeEvents.tryEmit(Unit)
+    }
+
+    override fun getChoseBody() {
+        _dataList.filter { it.tags.contains(BODY) }
+        itemsChangeEvents.tryEmit(Unit)
+    }
+
+    override fun getChoseSuntan() {
+        _dataList.filter { it.tags.contains(SUNTAN) }
+        itemsChangeEvents.tryEmit(Unit)
+    }
+
+    override fun getChoseMask() {
+        _dataList.filter { it.tags.contains(MASK) }
+        itemsChangeEvents.tryEmit(Unit)
+    }
+
     override suspend fun saveFavoriteItem(userId: Long, item: Item) {
         val index = _dataList.indexOf(item)
         val numberItem = item.id
@@ -103,5 +123,10 @@ class ItemRepositoryImpl @Inject constructor(
 
     companion object {
         private const val MOCK_JSON = "data.json"
+        private const val FACE = "face"
+        private const val BODY = "body"
+        private const val SUNTAN = "suntan"
+        private const val MASK = "mask"
+
     }
 }
