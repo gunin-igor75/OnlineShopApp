@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.github.gunin_igor75.onlineshopapp.data.local.model.ItemDbModel
 import com.github.gunin_igor75.onlineshopapp.data.local.model.UserDbModel
 import com.github.gunin_igor75.onlineshopapp.data.local.model.UserItemDbModel
 
@@ -12,7 +11,6 @@ import com.github.gunin_igor75.onlineshopapp.data.local.model.UserItemDbModel
     version = 1,
     entities = [
         UserDbModel::class,
-        ItemDbModel::class,
         UserItemDbModel::class
     ],
     exportSchema = false

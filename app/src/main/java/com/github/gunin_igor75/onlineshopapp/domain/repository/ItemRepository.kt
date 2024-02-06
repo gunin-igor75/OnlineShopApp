@@ -5,20 +5,20 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface ItemRepository {
-
     fun getItems(userId: Long): Flow<List<Item>>
-
     fun getSortFeedbackDesc()
-
     fun getSortPriceDesc()
-
+    fun observeIsFavorite(userId: Long, itemId: String): Flow<Boolean>
     fun getSortPriceAsc()
-    fun getChoseFace()
-    fun getChoseBody()
-    fun getChoseSuntan()
-    fun getChoseMask()
-    suspend fun saveFavoriteItem(userId: Long, item: Item)
+    suspend fun getChoseAll()
+    suspend fun getChoseFace()
 
-    suspend fun deleteFavoriteItem(userId: Long, item: Item)
+    suspend fun getChoseBody()
 
+    suspend fun getChoseSuntan()
+
+    suspend fun getChoseMask()
+
+    suspend fun deleteFavoriteItem(userId: Long, itemId: String)
+    suspend fun saveFavoriteItem(userId: Long, itemId: String)
 }

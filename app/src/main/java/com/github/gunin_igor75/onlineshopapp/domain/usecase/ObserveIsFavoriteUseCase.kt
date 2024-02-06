@@ -3,8 +3,8 @@ package com.github.gunin_igor75.onlineshopapp.domain.usecase
 import com.github.gunin_igor75.onlineshopapp.domain.repository.ItemRepository
 import javax.inject.Inject
 
-class GetChoseFaceUseCase @Inject constructor(
+class ObserveIsFavoriteUseCase @Inject constructor(
     private val repository: ItemRepository
 ) {
-    suspend operator fun invoke() = repository.getChoseFace()
+    operator fun invoke(userId: Long, itemId: String) = repository.observeIsFavorite(userId, itemId)
 }

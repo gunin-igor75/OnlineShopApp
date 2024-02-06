@@ -7,6 +7,6 @@ import javax.inject.Inject
 class DeleteFavoriteItemUseCase @Inject constructor(
     private val repository: ItemRepository
 ) {
-    suspend operator fun invoke(userId: Long, item: Item) =
-        repository.deleteFavoriteItem(userId, item)
+    suspend operator fun invoke(userId: Long, itemId: String) =
+        repository.deleteFavoriteItem(userId, itemId)
 }

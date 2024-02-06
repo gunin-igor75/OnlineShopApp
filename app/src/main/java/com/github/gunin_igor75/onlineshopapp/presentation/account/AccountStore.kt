@@ -159,9 +159,12 @@ class AccountStoreFactory @Inject constructor(
                     )
                     scope.launch {
                         val isError = checkUserUseCase(signData)
-                        val userId = insertUserUseCase(signData)
-                        dispatch(Msg.SaveUser(isError))
-                        publish(Label.ClickSaveUser(userId))
+                        if (!isError) {
+                            dispatch(Msg.SaveUser(isError))
+                        } else {
+                            val userId = insertUserUseCase(signData)
+                            publish(Label.ClickSaveUser(userId))
+                        }
                     }
                 }
             }

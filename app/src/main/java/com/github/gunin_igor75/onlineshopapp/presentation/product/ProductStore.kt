@@ -5,42 +5,58 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
+import com.github.gunin_igor75.onlineshopapp.domain.usecase.ObserveIsFavoriteUseCase
 import com.github.gunin_igor75.onlineshopapp.presentation.product.ProductStore.Intent
 import com.github.gunin_igor75.onlineshopapp.presentation.product.ProductStore.Label
 import com.github.gunin_igor75.onlineshopapp.presentation.product.ProductStore.State
+import javax.inject.Inject
 
-internal interface ProductStore : Store<Intent, State, Label> {
+interface ProductStore : Store<Intent, State, Label> {
 
     sealed interface Intent {
+        data object ClickBack: Intent
+        data object ClickChangeIsFavorite: Intent
     }
 
-    data class State(val unit: Unit)
+    data class State(
+        val item: Item,
+        val isFavorite: Boolean
+    )
 
     sealed interface Label {
+        data object ClickBack: Label
     }
 }
 
-internal class ProductStoreFactory(
-    private val storeFactory: StoreFactory
+class ProductStoreFactory @Inject constructor(
+    private val storeFactory: StoreFactory,
+    private val observeIsFavoriteUseCase: ObserveIsFavoriteUseCase
 ) {
 
-    fun create(): ProductStore =
+    fun create(item: Item): ProductStore =
         object : ProductStore, Store<Intent, State, Label> by storeFactory.create(
             name = "ProductStore",
-            initialState = State(Unit),
+            initialState = State(
+                item = item,
+                isFavorite = false
+            ),
             bootstrapper = BootstrapperImpl(),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
         ) {}
 
     private sealed interface Action {
+        data class FavoriteChange(val isFavorite: Boolean): Action
     }
 
     private sealed interface Msg {
+        data class FavoriteChange(val isFavorite: Boolean): Msg
     }
 
     private class BootstrapperImpl : CoroutineBootstrapper<Action>() {
         override fun invoke() {
+
         }
     }
 
@@ -53,6 +69,9 @@ internal class ProductStoreFactory(
     }
 
     private object ReducerImpl : Reducer<State, Msg> {
-        override fun State.reduce(message: Msg): State = State(Unit)
+        override fun State.reduce(msg: Msg): State =
+            when(msg){
+                is Msg.FavoriteChange -> TODO()
+            }
     }
 }

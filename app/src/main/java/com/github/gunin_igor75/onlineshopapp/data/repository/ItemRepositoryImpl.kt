@@ -1,13 +1,13 @@
 package com.github.gunin_igor75.onlineshopapp.data.repository
 
 import android.content.Context
+import androidx.compose.runtime.mutableStateOf
 import com.github.gunin_igor75.onlineshopapp.data.local.db.ItemDao
-import com.github.gunin_igor75.onlineshopapp.data.local.db.UserDao
-import com.github.gunin_igor75.onlineshopapp.data.local.model.ItemDbModel
 import com.github.gunin_igor75.onlineshopapp.data.local.model.UserItemDbModel
 import com.github.gunin_igor75.onlineshopapp.data.mapper.toItems
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
 import com.github.gunin_igor75.onlineshopapp.domain.repository.ItemRepository
+import com.github.gunin_igor75.onlineshopapp.ext.getIndex
 import com.github.gunin_igor75.onlineshopapp.utils.UIContentDto
 import com.github.gunin_igor75.onlineshopapp.utils.readJsonFromAssets
 import com.google.gson.Gson
@@ -17,107 +17,162 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class ItemRepositoryImpl @Inject constructor(
-    private val userDao: UserDao,
     private val itemDao: ItemDao,
     context: Context
 ) : ItemRepository {
 
-    private val _dataList: MutableList<Item>
-
-    private val dataList
-        get() = _dataList.toList()
+    private var _items: MutableList<Item>
+    private val items
+        get() = _items.toList()
 
     private val itemsChangeEvents = MutableSharedFlow<Unit>(replay = 1).apply {
         tryEmit(Unit)
     }
 
+    private val sortState = mutableStateOf(SortState.RATING)
+
+    private val currentUser = mutableStateOf(0L)
+
+    private val itemsDefault: List<Item>
+
+
+
     init {
         val jsonString = readJsonFromAssets(context, MOCK_JSON)
         val fakeItems = Gson().fromJson(jsonString, UIContentDto::class.java)
-        _dataList = mutableListOf<Item>().apply { addAll(fakeItems.items.toItems()) }
+        _items = mutableListOf<Item>().apply {
+            addAll(fakeItems.items.toItems())
+            sortedByDescending { it.feedback.rating }
+        }
+        itemsDefault = items
     }
 
     override fun getItems(userId: Long): Flow<List<Item>> = flow {
-        val favorites = itemDao.getItems(userId)
-        (0.._dataList.size).forEach { index ->
-            if (favorites.contains(_dataList[index].id)) {
-                _dataList[index] = _dataList[index].copy(isFavorite = true)
-            }
-        }
+        currentUser.value = userId
+        setupFavorite(_items)
         itemsChangeEvents.collect {
-            emit(dataList)
+            emit(items)
         }
     }
 
     override fun getSortFeedbackDesc() {
-        _dataList.sortedByDescending { it.feedback.rating }
+        sortState.value = SortState.RATING
+        _items.sortedByDescending { it.feedback.rating }
         itemsChangeEvents.tryEmit(Unit)
     }
 
     override fun getSortPriceDesc() {
-        _dataList.sortedByDescending { it.price.priceWithDiscount }
+        sortState.value = SortState.PRICE_DESC
+        _items.sortedByDescending { it.price.priceWithDiscount }
         itemsChangeEvents.tryEmit(Unit)
     }
 
     override fun getSortPriceAsc() {
-        _dataList.sortedBy { it.price.priceWithDiscount }
+        sortState.value = SortState.PRICE_ASC
+        _items.sortedBy { it.price.priceWithDiscount }
         itemsChangeEvents.tryEmit(Unit)
     }
 
-    override fun getChoseFace() {
-        _dataList.filter { it.tags.contains(FACE) }
+    override suspend fun getChoseAll() {
+        val temp = executeFilter(FilterState.ALL)
+        _items = temp.toMutableList()
+        executeSort()
+    }
+
+    override suspend fun getChoseFace() {
+        val temp = executeFilter(FilterState.FACE)
+        _items = temp.toMutableList()
+        executeSort()
+    }
+
+    override suspend fun getChoseBody() {
+        val temp = executeFilter(FilterState.BODY)
+        _items = temp.toMutableList()
+        executeSort()
+    }
+
+    override suspend fun getChoseSuntan() {
+        val temp = executeFilter(FilterState.SUNTAN)
+        _items = temp.toMutableList()
+        executeSort()
+    }
+
+    override suspend fun getChoseMask() {
+        val temp = executeFilter(FilterState.MASK)
+        _items = temp.toMutableList()
+        executeSort()
+    }
+
+    override fun observeIsFavorite(userId: Long, itemId: String): Flow<Boolean> =
+        itemDao.observeIsFavorite(userId, itemId)
+
+
+    override suspend fun saveFavoriteItem(userId: Long, itemId: String) {
+        val index = _items.getIndex(itemId)
+            ?: throw IllegalArgumentException("Item with id $itemId not exists")
+        val userItem = UserItemDbModel(userId, itemId)
+        itemDao.insertUserItem(userItem)
+        _items[index] = _items[index].copy(isFavorite = true)
         itemsChangeEvents.tryEmit(Unit)
     }
 
-    override fun getChoseBody() {
-        _dataList.filter { it.tags.contains(BODY) }
+    override suspend fun deleteFavoriteItem(userId: Long, itemId: String) {
+        val index = _items.getIndex(itemId)
+            ?: throw IllegalArgumentException("Item with id $itemId not exists")
+        val userItem = UserItemDbModel(userId, itemId)
+        itemDao.deleteUserItem(userItem)
+        _items[index] = _items[index].copy(isFavorite = false)
         itemsChangeEvents.tryEmit(Unit)
     }
 
-    override fun getChoseSuntan() {
-        _dataList.filter { it.tags.contains(SUNTAN) }
-        itemsChangeEvents.tryEmit(Unit)
+    private suspend fun setupFavorite(list: MutableList<Item>) {
+        val favorites = itemDao.getItemsIdIsFavorite(currentUser.value)
+        (0 until list.size).forEach { index ->
+            if (favorites.contains(list[index].id)) {
+                list[index] = list[index].copy(isFavorite = true)
+            }
+        }
     }
 
-    override fun getChoseMask() {
-        _dataList.filter { it.tags.contains(MASK) }
-        itemsChangeEvents.tryEmit(Unit)
+    private suspend fun executeFilter(state: FilterState): List<Item> {
+        val list = itemsDefault.toMutableList()
+        setupFavorite(list)
+        return when (state) {
+            FilterState.ALL -> {
+                list.toList()
+            }
+
+            FilterState.FACE -> {
+                list.filter { it.tags.contains(FACE) }
+            }
+
+            FilterState.BODY -> {
+                list.filter { it.tags.contains(BODY) }
+            }
+
+            FilterState.SUNTAN -> {
+                list.filter { it.tags.contains(SUNTAN) }
+            }
+
+            FilterState.MASK -> {
+                list.filter { it.tags.contains(MASK) }
+            }
+        }
     }
 
-    override suspend fun saveFavoriteItem(userId: Long, item: Item) {
-        val index = _dataList.indexOf(item)
-        val numberItem = item.id
-        existsUserById(userId)
-        val itemId = itemDao.getItemByNumber(numberItem) ?: itemDao.insertItem(
-            ItemDbModel(
-                number = numberItem
-            )
-        )
-        itemDao.insertUserItem(
-            UserItemDbModel(
-                userId = userId,
-                itemId = itemId
-            )
-        )
-        _dataList[index] = _dataList[index].copy(isFavorite = true)
-        itemsChangeEvents.tryEmit(Unit)
-    }
+    private fun executeSort() {
+        when (sortState.value) {
+            SortState.RATING -> {
+                getSortFeedbackDesc()
+            }
 
-    override suspend fun deleteFavoriteItem(userId: Long, item: Item) {
-        val index = _dataList.indexOf(item)
-        val numberItem = item.id
-        existsUserById(userId)
-        val itemId = itemDao.getItemByNumber(numberItem)
-            ?: throw IllegalStateException("Item number $numberItem does not exists")
-        itemDao.deleteUserItem(UserItemDbModel(userId, itemId))
-        _dataList[index] = _dataList[index].copy(isFavorite = false)
-        itemsChangeEvents.tryEmit(Unit)
-    }
+            SortState.PRICE_DESC -> {
+                getSortPriceDesc()
+            }
 
-    private suspend fun existsUserById(userId: Long) {
-        val isExists = userDao.existsUserById(userId)
-        if (!isExists) {
-            throw IllegalStateException("User id $userId does not exists")
+            SortState.PRICE_ASC -> {
+                getSortPriceAsc()
+            }
         }
     }
 
@@ -127,6 +182,5 @@ class ItemRepositoryImpl @Inject constructor(
         private const val BODY = "body"
         private const val SUNTAN = "suntan"
         private const val MASK = "mask"
-
     }
 }

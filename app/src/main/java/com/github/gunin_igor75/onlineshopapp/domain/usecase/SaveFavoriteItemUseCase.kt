@@ -7,6 +7,6 @@ import javax.inject.Inject
 class SaveFavoriteItemUseCase @Inject constructor(
     private val repository: ItemRepository
 ) {
-    suspend operator fun invoke(userId: Long, item: Item) =
-        repository.saveFavoriteItem(userId, item)
+    suspend operator fun invoke(userId: Long, itemId: String) =
+        repository.saveFavoriteItem(userId, itemId)
 }

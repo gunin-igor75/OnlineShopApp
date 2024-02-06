@@ -15,16 +15,10 @@ import androidx.room.Index
             parentColumns = ["id"],
             childColumns = ["user_id"],
             onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = ItemDbModel::class,
-            parentColumns = ["id"],
-            childColumns = ["item_id"],
-            onDelete = ForeignKey.CASCADE
         )
     ]
 )
 data class UserItemDbModel(
     @ColumnInfo("user_id") val userId: Long,
-    @ColumnInfo("item_id") val itemId: Long
+    @ColumnInfo("item_id") val itemId: String
 )

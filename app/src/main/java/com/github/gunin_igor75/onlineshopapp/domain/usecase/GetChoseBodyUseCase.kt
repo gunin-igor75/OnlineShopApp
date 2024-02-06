@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetChoseBodyUseCase @Inject constructor(
     private val repository: ItemRepository
 ) {
-    operator fun invoke() = repository.getChoseBody()
+    suspend operator fun invoke() = repository.getChoseBody()
 }
