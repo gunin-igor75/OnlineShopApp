@@ -2,7 +2,10 @@ package com.github.gunin_igor75.onlineshopapp.data.repository
 
 import android.content.Context
 import androidx.compose.runtime.mutableStateOf
+import androidx.room.Transaction
+import com.github.gunin_igor75.onlineshopapp.R
 import com.github.gunin_igor75.onlineshopapp.data.local.db.ItemDao
+import com.github.gunin_igor75.onlineshopapp.data.local.db.UserDao
 import com.github.gunin_igor75.onlineshopapp.data.local.model.UserItemDbModel
 import com.github.gunin_igor75.onlineshopapp.data.mapper.toItems
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
@@ -14,11 +17,13 @@ import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ItemRepositoryImpl @Inject constructor(
     private val itemDao: ItemDao,
-    context: Context
+    private val userDao: UserDao,
+    private val context: Context
 ) : ItemRepository {
 
     private var _items: MutableList<Item>
@@ -36,7 +41,6 @@ class ItemRepositoryImpl @Inject constructor(
     private val itemsDefault: List<Item>
 
 
-
     init {
         val jsonString = readJsonFromAssets(context, MOCK_JSON)
         val fakeItems = Gson().fromJson(jsonString, UIContentDto::class.java)
@@ -46,6 +50,10 @@ class ItemRepositoryImpl @Inject constructor(
         }
         itemsDefault = items
     }
+
+    override fun getCountFavorite(userId: Long): Flow<String> =
+        itemDao.getCountFavorite(userId)
+            .map { transformString(it) }
 
     override fun getItems(userId: Long): Flow<List<Item>> = flow {
         currentUser.value = userId
@@ -134,6 +142,11 @@ class ItemRepositoryImpl @Inject constructor(
         }
     }
 
+    @Transaction
+    override suspend fun deleteAllInfo() {
+        itemDao.deleteUserSItems()
+        userDao.deleteUsers()
+    }
     private suspend fun executeFilter(state: FilterState): List<Item> {
         val list = itemsDefault.toMutableList()
         setupFavorite(list)
@@ -174,6 +187,10 @@ class ItemRepositoryImpl @Inject constructor(
                 getSortPriceAsc()
             }
         }
+    }
+
+    private fun transformString(number: Int): String {
+        return context.resources.getQuantityString(R.plurals.product_hint, number, number)
     }
 
     companion object {

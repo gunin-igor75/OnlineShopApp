@@ -10,7 +10,9 @@ interface ItemRepository {
     fun getSortPriceDesc()
     fun observeIsFavorite(userId: Long, itemId: String): Flow<Boolean>
     fun getSortPriceAsc()
+    fun getCountFavorite(userId: Long): Flow<String>
     suspend fun getChoseAll()
+
     suspend fun getChoseFace()
 
     suspend fun getChoseBody()
@@ -18,7 +20,7 @@ interface ItemRepository {
     suspend fun getChoseSuntan()
 
     suspend fun getChoseMask()
-
     suspend fun deleteFavoriteItem(userId: Long, itemId: String)
     suspend fun saveFavoriteItem(userId: Long, itemId: String)
+    suspend fun deleteAllInfo()
 }

@@ -6,6 +6,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
+import com.github.gunin_igor75.onlineshopapp.domain.entity.User
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.DeleteFavoriteItemUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.GetChoseAllUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.GetChoseBodyUseCase
@@ -68,12 +69,12 @@ class CatalogStoreFactory @Inject constructor(
     private val getChoseAllUseCase: GetChoseAllUseCase
 ) {
 
-    fun create(userId: Long): CatalogStore =
+    fun create(user: User): CatalogStore =
         object : CatalogStore, Store<Intent, State, Label> by storeFactory.create(
             name = "CatalogStore",
             initialState = State(State.ItemState.Initial),
-            bootstrapper = BootstrapperImpl(userId),
-            executorFactory = { ExecutorImpl(userId) },
+            bootstrapper = BootstrapperImpl(user.id),
+            executorFactory = { ExecutorImpl(user.id) },
             reducer = ReducerImpl
         ) {}
 

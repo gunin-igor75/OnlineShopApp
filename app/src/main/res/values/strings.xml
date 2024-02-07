@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">OnlineShopApp</string>
+
+    <plurals name="product_hint">
+        <item quantity="zero">%d</item>
+        <item quantity="one">%d Товар</item>
+        <item quantity="few">%d Товара</item>
+        <item quantity="many">%d Товаров</item>
+    </plurals>
 </resources>

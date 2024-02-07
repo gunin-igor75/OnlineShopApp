@@ -14,6 +14,9 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE phone = :phone LIMIT 1")
     suspend fun getUserByPhone(phone: String): UserDbModel?
 
+    @Query("DELETE FROM users")
+    suspend fun deleteUsers()
+
     @Query("SELECT EXISTS(SELECT * FROM users WHERE id = :userId LIMIT 1)")
     suspend fun existsUserById(userId: Long): Boolean
 

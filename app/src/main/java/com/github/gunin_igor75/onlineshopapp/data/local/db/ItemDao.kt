@@ -13,8 +13,15 @@ interface ItemDao {
     fun observeIsFavorite(userId: Long, itemId: String): Flow<Boolean>
     @Query("SELECT item_id FROM users_items WHERE user_id = :userId")
     suspend fun getItemsIdIsFavorite(userId: Long): List<String>
+
+    @Query("SELECT COUNT(*) FROM users_items WHERE user_id = :userId")
+    fun getCountFavorite(userId: Long): Flow<Int>
     @Insert
     suspend fun insertUserItem(userItemDbModel: UserItemDbModel)
     @Delete
     suspend fun deleteUserItem(userItemDbModel: UserItemDbModel)
+
+
+    @Query("DELETE FROM users_items")
+    suspend fun deleteUserSItems()
 }
