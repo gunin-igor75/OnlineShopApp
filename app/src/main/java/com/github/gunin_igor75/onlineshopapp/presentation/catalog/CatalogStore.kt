@@ -41,13 +41,8 @@ interface CatalogStore : Store<Intent, State, Label> {
     }
 
     data class State(
-        val itemsState: ItemState
-    ) {
-        sealed interface ItemState {
-            data object Initial : ItemState
-            data class SuccessLoaded(val items: List<Item>) : ItemState
-        }
-    }
+        val items: List<Item>
+    )
 
     sealed interface Label {
         data class ClickItem(val item: Item) : Label
@@ -72,7 +67,7 @@ class CatalogStoreFactory @Inject constructor(
     fun create(user: User): CatalogStore =
         object : CatalogStore, Store<Intent, State, Label> by storeFactory.create(
             name = "CatalogStore",
-            initialState = State(State.ItemState.Initial),
+            initialState = State(items = listOf()),
             bootstrapper = BootstrapperImpl(user.id),
             executorFactory = { ExecutorImpl(user.id) },
             reducer = ReducerImpl
@@ -301,35 +296,35 @@ class CatalogStoreFactory @Inject constructor(
             when (msg) {
 
                 is Msg.ItemsLoaded -> {
-                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                    copy(items = msg.items)
                 }
 
                 is Msg.ItemsChangeFavorite -> {
-                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                    copy(items = msg.items)
                 }
                 is Msg.ItemsChoseAll -> {
-                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                    copy(items = msg.items)
                 }
                 is Msg.ItemsChoseBody -> {
-                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                    copy(items = msg.items)
                 }
                 is Msg.ItemsChoseFace -> {
-                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                    copy(items = msg.items)
                 }
                 is Msg.ItemsChoseMask -> {
-                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                    copy(items = msg.items)
                 }
                 is Msg.ItemsChoseSuntan -> {
-                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                    copy(items = msg.items)
                 }
                 is Msg.ItemsSortFeedbackRating -> {
-                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                    copy(items = msg.items)
                 }
                 is Msg.ItemsSortPriceAsc -> {
-                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                    copy(items = msg.items)
                 }
                 is Msg.ItemsSortPriceDesc -> {
-                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                    copy(items = msg.items)
                 }
             }
     }

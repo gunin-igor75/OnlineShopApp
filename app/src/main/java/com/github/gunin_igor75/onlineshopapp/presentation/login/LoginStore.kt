@@ -19,6 +19,7 @@ internal interface LoginStore : Store<Intent, State, Label> {
     sealed interface Intent {
         data object ClickBack : Intent
         data object ClickLogOut : Intent
+        data class ClickFavorite(val userId: Long): Intent
     }
 
     data class State(
@@ -29,6 +30,7 @@ internal interface LoginStore : Store<Intent, State, Label> {
     sealed interface Label {
         data object ClickBack : Label
         data object ClickLogOut : Label
+        data class ClickFavorite(val userId: Long): Label
     }
 }
 
@@ -81,6 +83,10 @@ internal class LoginStoreFactory @Inject constructor(
                         deleteAllInfoUseCase()
                         publish(Label.ClickLogOut)
                     }
+                }
+
+                is Intent.ClickFavorite -> {
+                    publish(Label.ClickFavorite(intent.userId))
                 }
             }
         }

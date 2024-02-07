@@ -16,8 +16,10 @@ import com.github.gunin_igor75.onlineshopapp.utils.readJsonFromAssets
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import javax.inject.Inject
 
 class ItemRepositoryImpl @Inject constructor(
@@ -133,8 +135,26 @@ class ItemRepositoryImpl @Inject constructor(
         itemsChangeEvents.tryEmit(Unit)
     }
 
+    @Transaction
+    override suspend fun deleteAllInfo() {
+        itemDao.deleteUserSItems()
+        userDao.deleteUsers()
+    }
+
+    override fun getFavorites(userId: Long): Flow<List<Item>> = flow {
+        val favorites = itemDao.getItemsIdIsFavorite(userId)
+        favorites.collect{itemId ->
+            val result = mutableListOf<Item>()
+            _items.forEach {item ->
+                if (item.id == itemId) {
+                    result.add(item)
+                }
+            }
+            emit(result)
+        }
+    }
     private suspend fun setupFavorite(list: MutableList<Item>) {
-        val favorites = itemDao.getItemsIdIsFavorite(currentUser.value)
+        val favorites = itemDao.getItemsIdIsFavorite(currentUser.value).toList()
         (0 until list.size).forEach { index ->
             if (favorites.contains(list[index].id)) {
                 list[index] = list[index].copy(isFavorite = true)
@@ -142,11 +162,6 @@ class ItemRepositoryImpl @Inject constructor(
         }
     }
 
-    @Transaction
-    override suspend fun deleteAllInfo() {
-        itemDao.deleteUserSItems()
-        userDao.deleteUsers()
-    }
     private suspend fun executeFilter(state: FilterState): List<Item> {
         val list = itemsDefault.toMutableList()
         setupFavorite(list)

@@ -12,7 +12,7 @@ interface ItemDao {
     @Query("SELECT EXISTS(SELECT * FROM users_items WHERE user_id = :userId AND item_id = :itemId)")
     fun observeIsFavorite(userId: Long, itemId: String): Flow<Boolean>
     @Query("SELECT item_id FROM users_items WHERE user_id = :userId")
-    suspend fun getItemsIdIsFavorite(userId: Long): List<String>
+    suspend fun getItemsIdIsFavorite(userId: Long): Flow<String>
 
     @Query("SELECT COUNT(*) FROM users_items WHERE user_id = :userId")
     fun getCountFavorite(userId: Long): Flow<Int>
