@@ -44,8 +44,6 @@ interface CatalogStore : Store<Intent, State, Label> {
     ) {
         sealed interface ItemState {
             data object Initial : ItemState
-            data object Loading : ItemState
-            data object Error : ItemState
             data class SuccessLoaded(val items: List<Item>) : ItemState
         }
     }
@@ -80,15 +78,29 @@ class CatalogStoreFactory @Inject constructor(
         ) {}
 
     private sealed interface Action {
-        data object ItemsStartLoading : Action
         data class ItemsLoaded(val items: List<Item>) : Action
-        data object ItemsError : Action
+        data class ItemsSortFeedbackRating(val items: List<Item>) : Action
+        data class ItemsSortPriceDesc(val items: List<Item>) : Action
+        data class ItemsSortPriceAsc(val items: List<Item>) : Action
+        data class ItemsChoseFace(val items: List<Item>) : Action
+        data class ItemsChoseBody(val items: List<Item>) : Action
+        data class ItemsChoseSuntan(val items: List<Item>) : Action
+        data class ItemsChoseMask(val items: List<Item>) : Action
+        data class ItemsChoseAll(val items: List<Item>) : Action
+        data class ItemsChangeFavorite(val items: List<Item>) : Action
     }
 
     private sealed interface Msg {
-        data object ItemsStartLoading : Msg
         data class ItemsLoaded(val items: List<Item>) : Msg
-        data object ItemsError : Msg
+        data class ItemsSortFeedbackRating(val items: List<Item>) : Msg
+        data class ItemsSortPriceDesc(val items: List<Item>) : Msg
+        data class ItemsSortPriceAsc(val items: List<Item>) : Msg
+        data class ItemsChoseFace(val items: List<Item>) : Msg
+        data class ItemsChoseBody(val items: List<Item>) : Msg
+        data class ItemsChoseSuntan(val items: List<Item>) : Msg
+        data class ItemsChoseMask(val items: List<Item>) : Msg
+        data class ItemsChoseAll(val items: List<Item>) : Msg
+        data class ItemsChangeFavorite(val items: List<Item>) : Msg
     }
 
     private inner class BootstrapperImpl(
@@ -96,14 +108,72 @@ class CatalogStoreFactory @Inject constructor(
     ) : CoroutineBootstrapper<Action>() {
         override fun invoke() {
             scope.launch {
-                dispatch(Action.ItemsStartLoading)
-                try {
-                    val items = getItemsUseCase(userId)
-                    items.collect {
-                        dispatch(Action.ItemsLoaded(it))
-                    }
-                } catch (e: Exception) {
-                    dispatch(Action.ItemsError)
+                val items = getItemsUseCase(userId)
+                items.collect {
+                    dispatch(Action.ItemsLoaded(it))
+                }
+            }
+
+            scope.launch {
+                val items = getItemsUseCase(userId)
+                items.collect {
+                    dispatch(Action.ItemsSortFeedbackRating(it))
+                }
+            }
+
+            scope.launch {
+                val items = getItemsUseCase(userId)
+                items.collect {
+                    dispatch(Action.ItemsSortPriceDesc(it))
+                }
+            }
+
+            scope.launch {
+                val items = getItemsUseCase(userId)
+                items.collect {
+                    dispatch(Action.ItemsSortPriceAsc(it))
+                }
+            }
+
+            scope.launch {
+                val items = getItemsUseCase(userId)
+                items.collect {
+                    dispatch(Action.ItemsChoseAll(it))
+                }
+            }
+
+            scope.launch {
+                val items = getItemsUseCase(userId)
+                items.collect {
+                    dispatch(Action.ItemsChoseBody(it))
+                }
+            }
+
+            scope.launch {
+                val items = getItemsUseCase(userId)
+                items.collect {
+                    dispatch(Action.ItemsChoseFace(it))
+                }
+            }
+
+            scope.launch {
+                val items = getItemsUseCase(userId)
+                items.collect {
+                    dispatch(Action.ItemsChoseMask(it))
+                }
+            }
+
+            scope.launch {
+                val items = getItemsUseCase(userId)
+                items.collect {
+                    dispatch(Action.ItemsChoseSuntan(it))
+                }
+            }
+
+            scope.launch {
+                val items = getItemsUseCase(userId)
+                items.collect {
+                    dispatch(Action.ItemsChangeFavorite(it))
                 }
             }
         }
@@ -127,14 +197,12 @@ class CatalogStoreFactory @Inject constructor(
                                 itemId = intent.item.id
                             )
                         }
-                        runIntent()
                     }
                 }
 
                 Intent.ClickChoseAll -> {
                     scope.launch {
                         getChoseAllUseCase()
-                        runIntent()
                     }
                 }
 
@@ -143,97 +211,124 @@ class CatalogStoreFactory @Inject constructor(
                 }
 
                 Intent.ClickSortFeedbackRating -> {
-                    scope.launch {
-                        getSortFeedbackDescUseCase()
-                        runIntent()
-                    }
+                    getSortFeedbackDescUseCase()
                 }
 
                 Intent.ClickSortPriceAsc -> {
-                    scope.launch {
-                        getSortPriceAscUseCase()
-                        runIntent()
-                    }
+                    getSortPriceAscUseCase()
                 }
 
                 Intent.ClickSortPriceDesc -> {
-                    scope.launch {
-                        getSortPriceDescUseCase()
-                        runIntent()
-                    }
+                    getSortPriceDescUseCase()
                 }
 
                 Intent.ClickChoseBody -> {
                     scope.launch {
                         getChoseBodyUseCase()
-                        runIntent()
                     }
                 }
 
                 Intent.ClickChoseFace -> {
                     scope.launch {
                         getChoseFaceUseCase()
-                        runIntent()
                     }
                 }
 
                 Intent.ClickChoseMask -> {
                     scope.launch {
                         getChoseMaskUseCase()
-                        runIntent()
                     }
                 }
 
                 Intent.ClickChoseSuntan -> {
                     scope.launch {
                         getChoseSuntanUseCase()
-                        runIntent()
                     }
                 }
             }
         }
 
         override fun executeAction(action: Action, getState: () -> State) {
-            when(action){
-                Action.ItemsError -> {
-                    dispatch(Msg.ItemsError)
-                }
+            when (action) {
                 is Action.ItemsLoaded -> {
                     dispatch(Msg.ItemsLoaded(action.items))
                 }
-                Action.ItemsStartLoading -> {
-                    dispatch(Msg.ItemsStartLoading)
+
+                is Action.ItemsChangeFavorite -> {
+                    dispatch(Msg.ItemsChangeFavorite(action.items))
+                }
+
+                is Action.ItemsChoseAll -> {
+                    dispatch(Msg.ItemsChoseAll(action.items))
+                }
+
+                is Action.ItemsChoseBody -> {
+                    dispatch(Msg.ItemsChoseBody(action.items))
+                }
+
+                is Action.ItemsChoseFace -> {
+                    dispatch(Msg.ItemsChoseFace(action.items))
+                }
+
+                is Action.ItemsChoseMask -> {
+                    dispatch(Msg.ItemsChoseMask(action.items))
+                }
+
+                is Action.ItemsChoseSuntan -> {
+                    dispatch(Msg.ItemsChoseSuntan(action.items))
+                }
+
+                is Action.ItemsSortFeedbackRating -> {
+                    dispatch(Msg.ItemsSortFeedbackRating(action.items))
+                }
+
+                is Action.ItemsSortPriceAsc -> {
+                    dispatch(Msg.ItemsSortPriceAsc(action.items))
+                }
+
+                is Action.ItemsSortPriceDesc -> {
+                    dispatch(Msg.ItemsSortPriceDesc(action.items))
                 }
             }
         }
 
-        private suspend fun runIntent() {
-            dispatch(Msg.ItemsStartLoading)
-            try {
-                val items = this@CatalogStoreFactory.getItemsUseCase(userId)
-                items.collect {
-                    dispatch(Msg.ItemsLoaded(it))
-                }
-            } catch (e: Exception) {
-                dispatch(Msg.ItemsError)
-            }
-        }
     }
 
 
     private object ReducerImpl : Reducer<State, Msg> {
         override fun State.reduce(msg: Msg): State =
             when (msg) {
-                Msg.ItemsError -> {
-                    copy(itemsState = State.ItemState.Error)
-                }
 
                 is Msg.ItemsLoaded -> {
                     copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
                 }
 
-                Msg.ItemsStartLoading -> {
-                    copy(itemsState = State.ItemState.Loading)
+                is Msg.ItemsChangeFavorite -> {
+                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                }
+                is Msg.ItemsChoseAll -> {
+                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                }
+                is Msg.ItemsChoseBody -> {
+                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                }
+                is Msg.ItemsChoseFace -> {
+                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                }
+                is Msg.ItemsChoseMask -> {
+                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                }
+                is Msg.ItemsChoseSuntan -> {
+                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                }
+                is Msg.ItemsSortFeedbackRating -> {
+                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                }
+                is Msg.ItemsSortPriceAsc -> {
+                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
+                }
+                is Msg.ItemsSortPriceDesc -> {
+                    copy(itemsState = State.ItemState.SuccessLoaded(msg.items))
                 }
             }
     }
