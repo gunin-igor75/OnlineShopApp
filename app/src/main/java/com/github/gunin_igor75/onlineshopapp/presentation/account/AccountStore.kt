@@ -6,7 +6,9 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.github.gunin_igor75.onlineshopapp.domain.entity.SignData
-import com.github.gunin_igor75.onlineshopapp.domain.usecase.CheckUserUseCase
+import com.github.gunin_igor75.onlineshopapp.domain.entity.User
+import com.github.gunin_igor75.onlineshopapp.domain.usecase.GetUserByIdUseCase
+import com.github.gunin_igor75.onlineshopapp.domain.usecase.GetUserByPhoneUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.InsertUserUseCase
 import com.github.gunin_igor75.onlineshopapp.ext.isCheckPhone
 import com.github.gunin_igor75.onlineshopapp.ext.isCheckUsername
@@ -14,6 +16,7 @@ import com.github.gunin_igor75.onlineshopapp.presentation.account.AccountStore.I
 import com.github.gunin_igor75.onlineshopapp.presentation.account.AccountStore.Label
 import com.github.gunin_igor75.onlineshopapp.presentation.account.AccountStore.State
 import kotlinx.coroutines.launch
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 interface AccountStore : Store<Intent, State, Label> {
@@ -59,14 +62,17 @@ interface AccountStore : Store<Intent, State, Label> {
     }
 
     sealed interface Label {
-        data class ClickSaveUser(val userId: Long) : Label
+        data class ClickSaveUserHome(val user: User) : Label
+        data class ClickSaveUserCatalog(val user: User) : Label
+
     }
 }
 
 class AccountStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
-    private val checkUserUseCase: CheckUserUseCase,
-    private val insertUserUseCase: InsertUserUseCase
+    private val insertUserUseCase: InsertUserUseCase,
+    private val getUserByIdUseCase: GetUserByIdUseCase,
+    private val getUserByPhoneUseCase: GetUserByPhoneUseCase
 ) {
 
     fun create(): AccountStore =
@@ -94,7 +100,7 @@ class AccountStoreFactory @Inject constructor(
         data object ClearName : Msg
         data object ClearLastname : Msg
         data object ClearPhone : Msg
-        data class SaveUser(val isError: Boolean) : Msg
+        data class LogInError(val isError: Boolean) : Msg
     }
 
     private class BootstrapperImpl : CoroutineBootstrapper<Action>() {
@@ -158,13 +164,19 @@ class AccountStoreFactory @Inject constructor(
                         phone = state.phoneState.phone
                     )
                     scope.launch {
-                        val isError = checkUserUseCase(signData)
-                        if (!isError) {
-                            dispatch(Msg.SaveUser(isError))
-                        } else {
+                        val user = getUserByPhoneUseCase(signData.phone)
+                        if (user == null) {
                             val userId = insertUserUseCase(signData)
-                            publish(Label.ClickSaveUser(userId))
+                            val newUser =
+                                getUserByIdUseCase(userId) ?: throw IllegalArgumentException(
+                                    "User with id $userId not exists"
+                                )
+                            return@launch publish(Label.ClickSaveUserHome(newUser))
                         }
+                        if (user.name == signData.name && user.lastname == signData.lastname) {
+                            return@launch publish(Label.ClickSaveUserCatalog(user))
+                        }
+                        dispatch(Msg.LogInError(true))
                     }
                 }
             }
@@ -222,7 +234,7 @@ class AccountStoreFactory @Inject constructor(
                     )
                 }
 
-                is Msg.SaveUser -> {
+                is Msg.LogInError -> {
                     copy(
                         isActiveButton = false,
                         saveUserState = State.SaveUserState(

@@ -19,12 +19,7 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getUserByPhone(phone: String): User? {
         return userDao.getUserByPhone(phone)?.toUser()
     }
-
-    override suspend fun checkUser(signData: SignData): Boolean {
-        val user = userDao.getUserByPhone(signData.phone)
-        if (user != null && (user.name == signData.name && user.lastname == signData.lastname)) {
-            return false
-        }
-        return true
+    override suspend fun getUserById(userId: Long): User? {
+        return userDao.getUserById(userId)?.toUser()
     }
 }
