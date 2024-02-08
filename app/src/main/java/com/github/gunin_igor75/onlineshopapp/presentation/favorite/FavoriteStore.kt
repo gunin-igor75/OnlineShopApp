@@ -15,7 +15,7 @@ import com.github.gunin_igor75.onlineshopapp.presentation.favorite.FavoriteStore
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-internal interface FavoriteStore : Store<Intent, State, Label> {
+interface FavoriteStore : Store<Intent, State, Label> {
 
     sealed interface Intent {
         data object ClickBack : Intent
@@ -33,7 +33,7 @@ internal interface FavoriteStore : Store<Intent, State, Label> {
     }
 }
 
-internal class FavoriteStoreFactory @Inject constructor(
+class FavoriteStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val getFavoriteItemsUseCase: GetFavoriteItemsUseCase,
     private val saveFavoriteItemUseCase: SaveFavoriteItemUseCase,
