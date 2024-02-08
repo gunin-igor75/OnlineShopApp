@@ -13,8 +13,7 @@ import com.github.gunin_igor75.onlineshopapp.presentation.login.LoginStore.Label
 import com.github.gunin_igor75.onlineshopapp.presentation.login.LoginStore.State
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-internal interface LoginStore : Store<Intent, State, Label> {
+interface LoginStore : Store<Intent, State, Label> {
 
     sealed interface Intent {
         data object ClickBack : Intent
@@ -34,7 +33,7 @@ internal interface LoginStore : Store<Intent, State, Label> {
     }
 }
 
-internal class LoginStoreFactory @Inject constructor(
+class LoginStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val getCountProductUseCase: GetCountProductUseCase,
     private val deleteAllInfoUseCase: DeleteAllInfoUseCase
