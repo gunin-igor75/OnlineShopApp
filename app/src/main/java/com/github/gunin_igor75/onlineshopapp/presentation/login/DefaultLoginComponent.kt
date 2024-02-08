@@ -7,6 +7,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import com.github.gunin_igor75.onlineshopapp.domain.entity.User
 import com.github.gunin_igor75.onlineshopapp.presentation.extentions.componentScope
 import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
@@ -58,5 +59,16 @@ class DefaultLoginComponent @AssistedInject constructor(
 
     override fun onClickFavorite(userId: Long) {
         store.accept(LoginStore.Intent.ClickFavorite(userId))
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            @Assisted("user") user: User,
+            @Assisted("onBackClicked") onBackClicked: () -> Unit,
+            @Assisted("onLogoutClicked") onLogoutClicked: () -> Unit,
+            @Assisted("onFavoriteClicked") onFavoriteClicked: (Long) -> Unit,
+            @Assisted("componentContext") componentContext: ComponentContext
+        ): DefaultLoginComponent
     }
 }

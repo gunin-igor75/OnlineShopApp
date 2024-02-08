@@ -20,7 +20,7 @@ interface ProductStore : Store<Intent, State, Label> {
 
     sealed interface Intent {
         data object ClickBack : Intent
-        data object ClickChangeIsFavorite : Intent
+        data object ClickChangeFavorite : Intent
     }
 
     data class State(
@@ -88,7 +88,7 @@ class ProductStoreFactory @Inject constructor(
                     publish(Label.ClickBack)
                 }
 
-                Intent.ClickChangeIsFavorite -> {
+                Intent.ClickChangeFavorite -> {
                     val state = getState()
                     val isFavorite = state.isFavorite
                     val itemId = state.item.id
