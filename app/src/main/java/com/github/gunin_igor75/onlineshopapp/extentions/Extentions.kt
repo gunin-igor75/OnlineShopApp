@@ -1,4 +1,4 @@
-package com.github.gunin_igor75.onlineshopapp.ext
+package com.github.gunin_igor75.onlineshopapp.extentions
 
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
 

@@ -6,6 +6,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
+import com.github.gunin_igor75.onlineshopapp.domain.entity.User
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.DeleteFavoriteItemUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.GetFavoriteItemsUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.SaveFavoriteItemUseCase
@@ -40,12 +41,12 @@ class FavoriteStoreFactory @Inject constructor(
     private val deleteFavoriteItemUseCase: DeleteFavoriteItemUseCase
 ) {
 
-    fun create(userId: Long): FavoriteStore =
+    fun create(user: User): FavoriteStore =
         object : FavoriteStore, Store<Intent, State, Label> by storeFactory.create(
             name = "FavoriteStore",
             initialState = State(items = listOf()),
-            bootstrapper = BootstrapperImpl(userId),
-            executorFactory = { ExecutorImpl(userId) },
+            bootstrapper = BootstrapperImpl(user.id),
+            executorFactory = { ExecutorImpl(user.id) },
             reducer = ReducerImpl
         ) {}
 

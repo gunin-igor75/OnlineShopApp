@@ -1,5 +1,10 @@
 package com.github.gunin_igor75.onlineshopapp.domain.entity
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+
+@Parcelize
 data class Item(
     val id: String,
     val title: String,
@@ -12,4 +17,4 @@ data class Item(
     val info: List<Info>,
     val ingredients: String,
     val isFavorite: Boolean = false
-)
+): Parcelable

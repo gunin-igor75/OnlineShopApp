@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
+import com.github.gunin_igor75.onlineshopapp.domain.entity.User
 import com.github.gunin_igor75.onlineshopapp.presentation.extentions.componentScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -15,13 +16,13 @@ import kotlinx.coroutines.launch
 
 class DefaultFavoriteComponent @AssistedInject constructor(
     private val favoriteStoreFactory: FavoriteStoreFactory,
-    @Assisted("userId") private val userId: Long,
+    @Assisted("user") private val user: User,
     @Assisted("onBackClicked") private val onBackClicked: () -> Unit,
     @Assisted("onItemClicked") private val onItemClicked: (Item) -> Unit,
     @Assisted("componentContext") componentContext: ComponentContext
 ) : FavoriteComponent, ComponentContext by componentContext {
 
-    private val store = instanceKeeper.getStore { favoriteStoreFactory.create(userId) }
+    private val store = instanceKeeper.getStore { favoriteStoreFactory.create(user) }
 
     private val componentScope = componentScope()
 
@@ -59,7 +60,7 @@ class DefaultFavoriteComponent @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(
-            @Assisted("userId") userId: Long,
+            @Assisted("user") user: User,
             @Assisted("onBackClicked") onBackClicked: () -> Unit,
             @Assisted("onItemClicked") onItemClicked: (Item) -> Unit,
             @Assisted("componentContext") componentContext: ComponentContext

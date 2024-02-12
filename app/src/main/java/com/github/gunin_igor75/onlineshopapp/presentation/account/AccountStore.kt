@@ -10,8 +10,8 @@ import com.github.gunin_igor75.onlineshopapp.domain.entity.User
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.GetUserByIdUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.GetUserByPhoneUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.InsertUserUseCase
-import com.github.gunin_igor75.onlineshopapp.ext.isCheckPhone
-import com.github.gunin_igor75.onlineshopapp.ext.isCheckUsername
+import com.github.gunin_igor75.onlineshopapp.extentions.isCheckPhone
+import com.github.gunin_igor75.onlineshopapp.extentions.isCheckUsername
 import com.github.gunin_igor75.onlineshopapp.presentation.account.AccountStore.Intent
 import com.github.gunin_igor75.onlineshopapp.presentation.account.AccountStore.Label
 import com.github.gunin_igor75.onlineshopapp.presentation.account.AccountStore.State

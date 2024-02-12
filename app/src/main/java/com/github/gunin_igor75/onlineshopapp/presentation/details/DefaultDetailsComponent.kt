@@ -1,4 +1,4 @@
-package com.github.gunin_igor75.onlineshopapp.presentation.product
+package com.github.gunin_igor75.onlineshopapp.presentation.details
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
@@ -14,26 +14,26 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class DefaultProductComponent @AssistedInject constructor(
-    private val productStoreFactory: ProductStoreFactory,
+class DefaultDetailsComponent @AssistedInject constructor(
+    private val detailsStoreFactory: DetailsStoreFactory,
     @Assisted("user") private val user: User,
     @Assisted("item") private val item: Item,
     @Assisted("onBackClicked") private val onBackClicked: () -> Unit,
     @Assisted("componentContext") componentContext: ComponentContext
-) : ProductComponent, ComponentContext by componentContext {
+) : DetailsComponent, ComponentContext by componentContext {
 
-    private val store = instanceKeeper.getStore { productStoreFactory.create(user, item) }
+    private val store = instanceKeeper.getStore { detailsStoreFactory.create(user, item) }
 
     private val componentScope = componentScope()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val model: StateFlow<ProductStore.State> = store.stateFlow
+    val model: StateFlow<DetailsStore.State> = store.stateFlow
 
     init {
         componentScope.launch {
             store.labels.collect {
                 when (it) {
-                    ProductStore.Label.ClickBack -> {
+                    DetailsStore.Label.ClickBack -> {
                         onBackClicked()
                     }
                 }
@@ -42,11 +42,11 @@ class DefaultProductComponent @AssistedInject constructor(
     }
 
     override fun onClickBack() {
-        store.accept(ProductStore.Intent.ClickBack)
+        store.accept(DetailsStore.Intent.ClickBack)
     }
 
     override fun onClickChangeFavorite() {
-        store.accept(ProductStore.Intent.ClickChangeFavorite)
+        store.accept(DetailsStore.Intent.ClickChangeFavorite)
     }
 
     @AssistedFactory
@@ -56,6 +56,6 @@ class DefaultProductComponent @AssistedInject constructor(
             @Assisted("item") item: Item,
             @Assisted("onBackClicked") onBackClicked: () -> Unit,
             @Assisted("componentContext") componentContext: ComponentContext
-        ): DefaultProductComponent
+        ): DefaultDetailsComponent
     }
 }

@@ -1,4 +1,4 @@
-package com.github.gunin_igor75.onlineshopapp.presentation.product
+package com.github.gunin_igor75.onlineshopapp.presentation.details
 
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -10,13 +10,13 @@ import com.github.gunin_igor75.onlineshopapp.domain.entity.User
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.DeleteFavoriteItemUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.ObserveIsFavoriteUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.SaveFavoriteItemUseCase
-import com.github.gunin_igor75.onlineshopapp.presentation.product.ProductStore.Intent
-import com.github.gunin_igor75.onlineshopapp.presentation.product.ProductStore.Label
-import com.github.gunin_igor75.onlineshopapp.presentation.product.ProductStore.State
+import com.github.gunin_igor75.onlineshopapp.presentation.details.DetailsStore.Intent
+import com.github.gunin_igor75.onlineshopapp.presentation.details.DetailsStore.Label
+import com.github.gunin_igor75.onlineshopapp.presentation.details.DetailsStore.State
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-interface ProductStore : Store<Intent, State, Label> {
+interface DetailsStore : Store<Intent, State, Label> {
 
     sealed interface Intent {
         data object ClickBack : Intent
@@ -33,7 +33,7 @@ interface ProductStore : Store<Intent, State, Label> {
     }
 }
 
-class ProductStoreFactory @Inject constructor(
+class DetailsStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val observeIsFavoriteUseCase: ObserveIsFavoriteUseCase,
     private val saveFavoriteItemUseCase: SaveFavoriteItemUseCase,
@@ -43,8 +43,8 @@ class ProductStoreFactory @Inject constructor(
     fun create(
         user: User,
         item: Item
-    ): ProductStore =
-        object : ProductStore, Store<Intent, State, Label> by storeFactory.create(
+    ): DetailsStore =
+        object : DetailsStore, Store<Intent, State, Label> by storeFactory.create(
             name = "ProductStore",
             initialState = State(
                 item = item,

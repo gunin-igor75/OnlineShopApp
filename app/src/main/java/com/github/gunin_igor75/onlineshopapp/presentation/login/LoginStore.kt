@@ -16,7 +16,6 @@ import javax.inject.Inject
 interface LoginStore : Store<Intent, State, Label> {
 
     sealed interface Intent {
-        data object ClickBack : Intent
         data object ClickLogOut : Intent
         data class ClickFavorite(val userId: Long): Intent
     }
@@ -27,7 +26,6 @@ interface LoginStore : Store<Intent, State, Label> {
     )
 
     sealed interface Label {
-        data object ClickBack : Label
         data object ClickLogOut : Label
         data class ClickFavorite(val userId: Long): Label
     }
@@ -73,9 +71,6 @@ class LoginStoreFactory @Inject constructor(
     private inner class ExecutorImpl : CoroutineExecutor<Intent, Action, State, Msg, Label>() {
         override fun executeIntent(intent: Intent, getState: () -> State) {
             when (intent) {
-                Intent.ClickBack -> {
-                    publish(Label.ClickBack)
-                }
 
                 Intent.ClickLogOut -> {
                     scope.launch {

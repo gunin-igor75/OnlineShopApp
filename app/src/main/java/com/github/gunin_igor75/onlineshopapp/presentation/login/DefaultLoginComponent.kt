@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 class DefaultLoginComponent @AssistedInject constructor(
     private val loginStoreFactory: LoginStoreFactory,
     @Assisted("user") private val user: User,
-    @Assisted("onBackClicked") private val onBackClicked: () -> Unit,
     @Assisted("onLogoutClicked") private val onLogoutClicked: () -> Unit,
     @Assisted("onFavoriteClicked") private val onFavoriteClicked: (Long) -> Unit,
     @Assisted("componentContext") componentContext: ComponentContext
@@ -33,9 +32,6 @@ class DefaultLoginComponent @AssistedInject constructor(
         componentScope.launch {
             store.labels.collect {
                 when (it) {
-                    LoginStore.Label.ClickBack -> {
-                        onBackClicked()
-                    }
 
                     is LoginStore.Label.ClickFavorite -> {
                         onFavoriteClicked(it.userId)
@@ -49,9 +45,6 @@ class DefaultLoginComponent @AssistedInject constructor(
         }
     }
 
-    override fun onClickBack() {
-        store.accept(LoginStore.Intent.ClickBack)
-    }
 
     override fun onClickLogOut() {
         store.accept(LoginStore.Intent.ClickLogOut)
@@ -65,7 +58,6 @@ class DefaultLoginComponent @AssistedInject constructor(
     interface Factory {
         fun create(
             @Assisted("user") user: User,
-            @Assisted("onBackClicked") onBackClicked: () -> Unit,
             @Assisted("onLogoutClicked") onLogoutClicked: () -> Unit,
             @Assisted("onFavoriteClicked") onFavoriteClicked: (Long) -> Unit,
             @Assisted("componentContext") componentContext: ComponentContext

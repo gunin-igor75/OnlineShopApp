@@ -10,13 +10,12 @@ import com.github.gunin_igor75.onlineshopapp.data.local.model.UserItemDbModel
 import com.github.gunin_igor75.onlineshopapp.data.mapper.toItems
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
 import com.github.gunin_igor75.onlineshopapp.domain.repository.ItemRepository
-import com.github.gunin_igor75.onlineshopapp.ext.getIndex
+import com.github.gunin_igor75.onlineshopapp.extentions.getIndex
 import com.github.gunin_igor75.onlineshopapp.utils.UIContentDto
 import com.github.gunin_igor75.onlineshopapp.utils.readJsonFromAssets
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
