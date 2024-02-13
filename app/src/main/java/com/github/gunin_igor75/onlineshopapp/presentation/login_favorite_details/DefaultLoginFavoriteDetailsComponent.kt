@@ -15,6 +15,7 @@ import com.github.gunin_igor75.onlineshopapp.presentation.details.DefaultDetails
 import com.github.gunin_igor75.onlineshopapp.presentation.favorite.DefaultFavoriteComponent
 import com.github.gunin_igor75.onlineshopapp.presentation.login.DefaultLoginComponent
 import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.parcelize.Parcelize
 
@@ -93,5 +94,13 @@ class DefaultLoginFavoriteDetailsComponent @AssistedInject constructor(
 
         @Parcelize
         data class Details(val user: User, val item: Item) : ChildConfig
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            @Assisted("user") user: User,
+            @Assisted("componentContext") componentContext: ComponentContext
+        ): DefaultLoginFavoriteDetailsComponent
     }
 }
