@@ -15,6 +15,7 @@ import com.github.gunin_igor75.onlineshopapp.extentions.isCheckUsername
 import com.github.gunin_igor75.onlineshopapp.presentation.account.AccountStore.Intent
 import com.github.gunin_igor75.onlineshopapp.presentation.account.AccountStore.Label
 import com.github.gunin_igor75.onlineshopapp.presentation.account.AccountStore.State
+import com.github.gunin_igor75.onlineshopapp.presentation.main.OpenReason
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
@@ -62,8 +63,7 @@ interface AccountStore : Store<Intent, State, Label> {
     }
 
     sealed interface Label {
-        data class ClickSaveUserHome(val user: User) : Label
-        data class ClickSaveUserCatalog(val user: User) : Label
+        data class ClickSaveUser(val user: User, val openReason: OpenReason) : Label
 
     }
 }
@@ -171,10 +171,10 @@ class AccountStoreFactory @Inject constructor(
                                 getUserByIdUseCase(userId) ?: throw IllegalArgumentException(
                                     "User with id $userId not exists"
                                 )
-                            return@launch publish(Label.ClickSaveUserHome(newUser))
+                            return@launch publish(Label.ClickSaveUser(newUser, OpenReason.FIRST))
                         }
                         if (user.name == signData.name && user.lastname == signData.lastname) {
-                            return@launch publish(Label.ClickSaveUserCatalog(user))
+                            return@launch publish(Label.ClickSaveUser(user, OpenReason.REPEATED))
                         }
                         dispatch(Msg.LogInError(true))
                     }

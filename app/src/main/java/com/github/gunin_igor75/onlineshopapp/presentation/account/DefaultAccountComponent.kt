@@ -6,6 +6,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import com.github.gunin_igor75.onlineshopapp.domain.entity.User
 import com.github.gunin_igor75.onlineshopapp.presentation.extentions.componentScope
+import com.github.gunin_igor75.onlineshopapp.presentation.main.OpenReason
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -15,9 +16,8 @@ import kotlinx.coroutines.launch
 
 class DefaultAccountComponent @AssistedInject constructor(
     private val accountStoreFactory: AccountStoreFactory,
-    @Assisted("onSaveUserCatalog") private val onSaveUserCatalog: (User) -> Unit,
-    @Assisted("onSaveUserHome") private val onSaveUserHome: (User) -> Unit,
-    @Assisted("componentContext") componentContext: ComponentContext
+    @Assisted("componentContext") componentContext: ComponentContext,
+    @Assisted("onSaveUserClicked") private val onSaveUserClicked: (User, OpenReason) -> Unit
 ) : AccountComponent, ComponentContext by componentContext {
 
     private val store = instanceKeeper.getStore { accountStoreFactory.create() }
@@ -31,12 +31,8 @@ class DefaultAccountComponent @AssistedInject constructor(
         componentScope.launch {
             store.labels.collect {
                 when (it) {
-                    is AccountStore.Label.ClickSaveUserCatalog -> {
-                        onSaveUserCatalog(it.user)
-                    }
-
-                    is AccountStore.Label.ClickSaveUserHome -> {
-                        onSaveUserHome(it.user)
+                    is AccountStore.Label.ClickSaveUser -> {
+                        onSaveUserClicked(it.user, it.openReason)
                     }
                 }
             }
@@ -74,9 +70,8 @@ class DefaultAccountComponent @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(
-            @Assisted("onSaveUserCatalog") onSaveUserCatalog: (User) -> Unit,
-            @Assisted("onSaveUserHome") onSaveUserHome: (User) -> Unit,
-            @Assisted("componentContext") componentContext: ComponentContext
+            @Assisted("componentContext") componentContext: ComponentContext,
+            @Assisted("onSaveUserClicked") onSaveUserClicked: (User, OpenReason) -> Unit
         ): DefaultAccountComponent
     }
 }
