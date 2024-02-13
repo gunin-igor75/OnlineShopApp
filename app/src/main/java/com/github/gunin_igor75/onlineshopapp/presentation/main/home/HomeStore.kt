@@ -1,13 +1,13 @@
-package com.github.gunin_igor75.onlineshopapp.presentation.home
+package com.github.gunin_igor75.onlineshopapp.presentation.main.home
 
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import com.github.gunin_igor75.onlineshopapp.presentation.home.HomeStore.Intent
-import com.github.gunin_igor75.onlineshopapp.presentation.home.HomeStore.Label
-import com.github.gunin_igor75.onlineshopapp.presentation.home.HomeStore.State
+import com.github.gunin_igor75.onlineshopapp.presentation.main.home.HomeStore.Intent
+import com.github.gunin_igor75.onlineshopapp.presentation.main.home.HomeStore.Label
+import com.github.gunin_igor75.onlineshopapp.presentation.main.home.HomeStore.State
 
 internal interface HomeStore : Store<Intent, State, Label> {
 
@@ -29,7 +29,7 @@ internal class HomeStoreFactory(
             name = "HomeStore",
             initialState = State(Unit),
             bootstrapper = BootstrapperImpl(),
-            executorFactory = ::ExecutorImpl,
+            executorFactory = HomeStoreFactory::ExecutorImpl,
             reducer = ReducerImpl
         ) {}
 

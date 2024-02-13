@@ -1,4 +1,4 @@
-package com.github.gunin_igor75.onlineshopapp.presentation.catalog
+package com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.catalog
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore

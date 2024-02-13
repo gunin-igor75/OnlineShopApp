@@ -1,4 +1,4 @@
-package com.github.gunin_igor75.onlineshopapp.presentation.favorite
+package com.github.gunin_igor75.onlineshopapp.presentation.main.profile.favorite
 
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -10,9 +10,9 @@ import com.github.gunin_igor75.onlineshopapp.domain.entity.User
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.DeleteFavoriteItemUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.GetFavoriteItemsUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.SaveFavoriteItemUseCase
-import com.github.gunin_igor75.onlineshopapp.presentation.favorite.FavoriteStore.Intent
-import com.github.gunin_igor75.onlineshopapp.presentation.favorite.FavoriteStore.Label
-import com.github.gunin_igor75.onlineshopapp.presentation.favorite.FavoriteStore.State
+import com.github.gunin_igor75.onlineshopapp.presentation.main.profile.favorite.FavoriteStore.Intent
+import com.github.gunin_igor75.onlineshopapp.presentation.main.profile.favorite.FavoriteStore.Label
+import com.github.gunin_igor75.onlineshopapp.presentation.main.profile.favorite.FavoriteStore.State
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

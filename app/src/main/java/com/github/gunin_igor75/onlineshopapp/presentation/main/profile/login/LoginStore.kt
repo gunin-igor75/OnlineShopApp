@@ -1,4 +1,4 @@
-package com.github.gunin_igor75.onlineshopapp.presentation.login
+package com.github.gunin_igor75.onlineshopapp.presentation.main.profile.login
 
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -8,9 +8,9 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.github.gunin_igor75.onlineshopapp.domain.entity.User
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.DeleteAllInfoUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.GetCountProductUseCase
-import com.github.gunin_igor75.onlineshopapp.presentation.login.LoginStore.Intent
-import com.github.gunin_igor75.onlineshopapp.presentation.login.LoginStore.Label
-import com.github.gunin_igor75.onlineshopapp.presentation.login.LoginStore.State
+import com.github.gunin_igor75.onlineshopapp.presentation.main.profile.login.LoginStore.Intent
+import com.github.gunin_igor75.onlineshopapp.presentation.main.profile.login.LoginStore.Label
+import com.github.gunin_igor75.onlineshopapp.presentation.main.profile.login.LoginStore.State
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 interface LoginStore : Store<Intent, State, Label> {
@@ -45,7 +45,7 @@ class LoginStoreFactory @Inject constructor(
                 countProduct = ""
             ),
             bootstrapper = BootstrapperImpl(user.id),
-            executorFactory = ::ExecutorImpl,
+            executorFactory = LoginStoreFactory::ExecutorImpl,
             reducer = ReducerImpl
         ) {}
 

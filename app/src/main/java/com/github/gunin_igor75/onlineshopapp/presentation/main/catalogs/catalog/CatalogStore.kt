@@ -1,4 +1,4 @@
-package com.github.gunin_igor75.onlineshopapp.presentation.catalog
+package com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.catalog
 
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
@@ -18,9 +18,9 @@ import com.github.gunin_igor75.onlineshopapp.domain.usecase.GetSortFeedbackDescU
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.GetSortPriceAscUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.GetSortPriceDescUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.SaveFavoriteItemUseCase
-import com.github.gunin_igor75.onlineshopapp.presentation.catalog.CatalogStore.Intent
-import com.github.gunin_igor75.onlineshopapp.presentation.catalog.CatalogStore.Label
-import com.github.gunin_igor75.onlineshopapp.presentation.catalog.CatalogStore.State
+import com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.catalog.CatalogStore.Intent
+import com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.catalog.CatalogStore.Label
+import com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.catalog.CatalogStore.State
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

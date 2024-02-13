@@ -1,4 +1,4 @@
-package com.github.gunin_igor75.onlineshopapp.presentation.details
+package com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.details
 
 import androidx.compose.runtime.Composable
 

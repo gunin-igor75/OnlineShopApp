@@ -1,4 +1,4 @@
-package com.github.gunin_igor75.onlineshopapp.presentation.details
+package com.github.gunin_igor75.onlineshopapp.presentation.main.profile.favorite
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
@@ -14,27 +14,31 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class DefaultDetailsComponent @AssistedInject constructor(
-    private val detailsStoreFactory: DetailsStoreFactory,
+class DefaultFavoriteComponent @AssistedInject constructor(
+    private val favoriteStoreFactory: FavoriteStoreFactory,
     @Assisted("user") private val user: User,
-    @Assisted("item") private val item: Item,
     @Assisted("onBackClicked") private val onBackClicked: () -> Unit,
+    @Assisted("onItemClicked") private val onItemClicked: (Item) -> Unit,
     @Assisted("componentContext") componentContext: ComponentContext
-) : DetailsComponent, ComponentContext by componentContext {
+) : FavoriteComponent, ComponentContext by componentContext {
 
-    private val store = instanceKeeper.getStore { detailsStoreFactory.create(user, item) }
+    private val store = instanceKeeper.getStore { favoriteStoreFactory.create(user) }
 
     private val componentScope = componentScope()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val model: StateFlow<DetailsStore.State> = store.stateFlow
+    val madel: StateFlow<FavoriteStore.State> = store.stateFlow
 
     init {
         componentScope.launch {
             store.labels.collect {
                 when (it) {
-                    DetailsStore.Label.ClickBack -> {
+                    FavoriteStore.Label.ClickBack -> {
                         onBackClicked()
+                    }
+
+                    is FavoriteStore.Label.ClickItem -> {
+                        onItemClicked(it.item)
                     }
                 }
             }
@@ -42,20 +46,24 @@ class DefaultDetailsComponent @AssistedInject constructor(
     }
 
     override fun onClickBack() {
-        store.accept(DetailsStore.Intent.ClickBack)
+        store.accept(FavoriteStore.Intent.ClickBack)
     }
 
-    override fun onClickChangeFavorite() {
-        store.accept(DetailsStore.Intent.ClickChangeFavorite)
+    override fun onClickItem(item: Item) {
+        store.accept(FavoriteStore.Intent.ClickItem(item))
+    }
+
+    override fun onChangeFavorite(item: Item) {
+        store.accept(FavoriteStore.Intent.ClickChangeFavorite(item))
     }
 
     @AssistedFactory
     interface Factory {
         fun create(
             @Assisted("user") user: User,
-            @Assisted("item") item: Item,
             @Assisted("onBackClicked") onBackClicked: () -> Unit,
+            @Assisted("onItemClicked") onItemClicked: (Item) -> Unit,
             @Assisted("componentContext") componentContext: ComponentContext
-        ): DefaultDetailsComponent
+        ): DefaultFavoriteComponent
     }
 }
