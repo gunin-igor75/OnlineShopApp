@@ -3,6 +3,15 @@
     <string name="is_error_message">Enter a valid symbol</string>
     <string name="button_clear_value_description">Button Clear value</string>
     <string name="login_title">Вход</string>
+    <string name="label_name">Имя</string>
+    <string name="label_lastname">Фамилия</string>
+    <string name="label_phone">Телефон</string>
+    <string name="placeholder_name">Введите имя</string>
+    <string name="placeholder_lastname">Введите фамилию </string>
+    <string name="placeholder_phone">Введите номер телефона</string>
+    <string name="login_button">Войти</string>
+    <string name="account_text_bottom_part_1">Нажимая кнопку "Войти", Вы приимаете</string>
+    <string name="account_text_bottom_part_2">условия программы лояльности</string>
 
     <plurals name="product_hint">
         <item quantity="zero">%d</item>

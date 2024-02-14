@@ -1,12 +1,15 @@
 package com.github.gunin_igor75.onlineshopapp.presentation.account
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -18,8 +21,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,20 +46,79 @@ fun AccountContent(
 ) {
     val state by component.model.collectAsState()
 
-    Column(modifier = modifier.padding(16.dp)) {
+    Column(
+        modifier = modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             text = stringResource(R.string.login_title),
             style = MaterialTheme.typography.titleMedium.copy(
-                fontSize = 20.sp
+                fontSize = 16.sp
             )
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        TextFieldText(
+            modifier = Modifier.fillMaxWidth(),
+            value = state.nameState.name,
+            labelId = R.string.label_name,
+            placeholderId = R.string.placeholder_name,
+            isError = state.nameState.isError,
+            onChangeValue = component::onChangeName,
+            onClearValue = component::onClearName
+        )
+        TextFieldText(
+            modifier = Modifier.fillMaxWidth(),
+            value = state.lastnameState.lastname,
+            labelId = R.string.label_lastname,
+            placeholderId = R.string.placeholder_lastname,
+            isError = state.lastnameState.isError,
+            onChangeValue = component::onChangeLastname,
+            onClearValue = component::onClearLastname
+        )
+        TextFieldPhone(
+            modifier = Modifier.fillMaxWidth(),
+            value = state.phoneState.phone,
+            labelId = R.string.label_phone,
+            placeholderId = R.string.placeholder_phone,
+            isError = state.phoneState.isError,
+            onChangeValue = component::onChangePhone,
+            onClearValue = component::onClearPhone
+        )
+        val shape = RoundedCornerShape(8.dp)
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            shape = shape,
+            onClick = {}
+        ) {
+            Text(text = stringResource(id = R.string.login_button))
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = getBottomText(),
+            textAlign = TextAlign.Center,
+            lineHeight = 10.sp
         )
     }
 }
 
 @Composable
+private fun getBottomText(): AnnotatedString = buildAnnotatedString {
+    withStyle(SpanStyle(fontSize = 10.sp)) {
+        append(stringResource(id = R.string.account_text_bottom_part_1))
+        append("\n")
+        withStyle(
+            SpanStyle(textDecoration = TextDecoration.Underline)
+        ) {
+            append(stringResource(id = R.string.account_text_bottom_part_2))
+        }
+    }
+}
+
+@Composable
 private fun TextFieldText(
+    modifier: Modifier = Modifier,
     value: String,
     labelId: Int,
     placeholderId: Int,
@@ -60,7 +127,7 @@ private fun TextFieldText(
     onClearValue: () -> Unit
 ) {
     TextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         value = value,
         onValueChange = { onChangeValue(it) },
         label = { Text(text = stringResource(id = labelId)) },
@@ -85,6 +152,7 @@ private fun TextFieldText(
 
 @Composable
 private fun TextFieldPhone(
+    modifier: Modifier = Modifier,
     value: String,
     labelId: Int,
     placeholderId: Int,
@@ -95,7 +163,7 @@ private fun TextFieldPhone(
     val inputMaxLength = MASK.count { maskChar -> maskChar == MASK_CHAR_INPUT }
 
     TextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         value = value,
         onValueChange = { currentValue ->
             val result = currentValue.take(inputMaxLength).filter { it.isDigit() }
@@ -126,11 +194,12 @@ private fun TextFieldPhone(
     )
 }
 
+
 @Preview(showBackground = true)
 @Composable
-fun AccountContentPreview(
+private fun AccountContentPreview(
 ) {
-    OnlineShopAppTheme{
+    OnlineShopAppTheme {
         AccountContent(
             component = AccountComponentPreview(),
             modifier = Modifier.fillMaxSize()
@@ -138,22 +207,23 @@ fun AccountContentPreview(
     }
 }
 
-private class AccountComponentPreview: AccountComponent{
+private class AccountComponentPreview : AccountComponent {
     override val model: StateFlow<AccountStore.State> =
         MutableStateFlow(
             AccountStore.State(
-                nameState = AccountStore.State.NameState("", false ),
-                lastnameState = AccountStore.State.LastnameState("", false ),
-                phoneState = AccountStore.State.PhoneState("", false ),
-                saveUserState = AccountStore.State.SaveUserState( false )
+                nameState = AccountStore.State.NameState("", false),
+                lastnameState = AccountStore.State.LastnameState("Пупкин", false),
+                phoneState = AccountStore.State.PhoneState("", false),
+                saveUserState = AccountStore.State.SaveUserState(false)
             )
         )
+
     override fun onChangeName(name: String) {}
-    override fun onChangeLastname(lastname: String) { }
-    override fun onChangePhone(phone: String) { }
-    override fun onClearName() { }
-    override fun onClearLastname() { }
-    override fun onClearPhone() { }
-    override fun onClickLogin(user: User) { }
+    override fun onChangeLastname(lastname: String) {}
+    override fun onChangePhone(phone: String) {}
+    override fun onClearName() {}
+    override fun onClearLastname() {}
+    override fun onClearPhone() {}
+    override fun onClickLogin(user: User) {}
 
 }
