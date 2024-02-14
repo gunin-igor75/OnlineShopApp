@@ -26,7 +26,7 @@ class DefaultLoginComponent @AssistedInject constructor(
     private val componentScope = componentScope()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val model: StateFlow<LoginStore.State> = store.stateFlow
+    override val model: StateFlow<LoginStore.State> = store.stateFlow
 
     init {
         componentScope.launch {

@@ -45,7 +45,7 @@ class LoginStoreFactory @Inject constructor(
                 countProduct = ""
             ),
             bootstrapper = BootstrapperImpl(user.id),
-            executorFactory = LoginStoreFactory::ExecutorImpl,
+            executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
         ) {}
 

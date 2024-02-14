@@ -1,4 +1,4 @@
-package com.github.gunin_igor75.onlineshopapp.presentation.login_favorite_details
+package com.github.gunin_igor75.onlineshopapp.presentation.main.profile
 
 import android.os.Parcelable
 import com.arkivanov.decompose.ComponentContext
@@ -11,9 +11,10 @@ import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
 import com.github.gunin_igor75.onlineshopapp.domain.entity.User
-import com.github.gunin_igor75.onlineshopapp.presentation.details.DefaultDetailsComponent
-import com.github.gunin_igor75.onlineshopapp.presentation.favorite.DefaultFavoriteComponent
-import com.github.gunin_igor75.onlineshopapp.presentation.login.DefaultLoginComponent
+import com.github.gunin_igor75.onlineshopapp.presentation.login_favorite_details.LoginFavoriteDetailsComponent
+import com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.details.DefaultDetailsComponent
+import com.github.gunin_igor75.onlineshopapp.presentation.main.profile.favorite.DefaultFavoriteComponent
+import com.github.gunin_igor75.onlineshopapp.presentation.main.profile.login.DefaultLoginComponent
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

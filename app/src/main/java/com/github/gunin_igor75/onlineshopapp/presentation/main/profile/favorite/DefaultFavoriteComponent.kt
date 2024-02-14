@@ -19,7 +19,7 @@ class DefaultFavoriteComponent @AssistedInject constructor(
     @Assisted("user") private val user: User,
     @Assisted("onBackClicked") private val onBackClicked: () -> Unit,
     @Assisted("onItemClicked") private val onItemClicked: (Item) -> Unit,
-    @Assisted("componentContext") componentContext: ComponentContext
+    @Assisted("componentContext") componentContext: ComponentContext,
 ) : FavoriteComponent, ComponentContext by componentContext {
 
     private val store = instanceKeeper.getStore { favoriteStoreFactory.create(user) }
@@ -27,7 +27,7 @@ class DefaultFavoriteComponent @AssistedInject constructor(
     private val componentScope = componentScope()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val madel: StateFlow<FavoriteStore.State> = store.stateFlow
+    override val model: StateFlow<FavoriteStore.State> = store.stateFlow
 
     init {
         componentScope.launch {

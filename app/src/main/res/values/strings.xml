@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">OnlineShopApp</string>
+    <string name="is_error_message">Enter a valid symbol</string>
+    <string name="button_clear_value_description">Button Clear value</string>
+    <string name="login_title">Вход</string>
 
     <plurals name="product_hint">
         <item quantity="zero">%d</item>

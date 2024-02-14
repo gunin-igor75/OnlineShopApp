@@ -2,9 +2,9 @@ package com.github.gunin_igor75.onlineshopapp.presentation.login_favorite_detail
 
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
-import com.github.gunin_igor75.onlineshopapp.presentation.details.DetailsComponent
-import com.github.gunin_igor75.onlineshopapp.presentation.favorite.FavoriteComponent
-import com.github.gunin_igor75.onlineshopapp.presentation.login.LoginComponent
+import com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.details.DetailsComponent
+import com.github.gunin_igor75.onlineshopapp.presentation.main.profile.favorite.FavoriteComponent
+import com.github.gunin_igor75.onlineshopapp.presentation.main.profile.login.LoginComponent
 
 interface LoginFavoriteDetailsComponent {
 
