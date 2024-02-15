@@ -9,4 +9,14 @@ data class User(
     val name: String,
     val lastname: String,
     val phone: String
-): Parcelable
+): Parcelable{
+
+    companion object {
+        val USER_DEFAULT = User(
+            id = 0L,
+            name = "Bob",
+            lastname = "Bobovich",
+            phone = "5555555555"
+        )
+    }
+}

@@ -19,12 +19,20 @@
     <string name="pagination_not_active_desription">Pagination not active</string>
     <string name="image_item_description">Image item</string>
     <string name="icon_point_description">Icon point description</string>
+    <string name="details_description">Описание</string>
+    <string name="button_details">Подробнее</string>
+    <string name="button_hiden">Скрыть</string>
+    <string name="details_characteristic">Характуристики</string>
+    <string name="icon_copy_description">Icon copy description</string>
+    <string name="details_compound">Состав</string>
+    <string name="details_add_basket">Добавить в корзину</string>
 
     <plurals name="product_hint">
         <item quantity="zero">%d</item>
         <item quantity="one">%d Товар</item>
         <item quantity="few">%d Товара</item>
         <item quantity="many">%d Товаров</item>
+        <item quantity="other">%d</item>
     </plurals>
 
     <plurals name="product_feedback">
@@ -32,6 +40,7 @@
         <item quantity="one">%d отзыв</item>
         <item quantity="few">%d отзыва</item>
         <item quantity="many">%d отзывов</item>
+        <item quantity="other">%d</item>
     </plurals>
 
     <plurals name="product_count">
@@ -39,6 +48,7 @@
         <item quantity="one">Доступно для заказа %d штука</item>
         <item quantity="few">Доступно для заказа %d штуки</item>
         <item quantity="many">Доступно для заказа %d штук</item>
+        <item quantity="other">%d</item>
     </plurals>
 
 </resources>
