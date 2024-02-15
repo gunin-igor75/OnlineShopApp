@@ -12,6 +12,12 @@
     <string name="login_button">Войти</string>
     <string name="account_text_bottom_part_1">Нажимая кнопку "Войти", Вы приимаете</string>
     <string name="account_text_bottom_part_2">условия программы лояльности</string>
+    <string name="icon_star_rating_description">Icon star rating</string>
+    <string name="details_button_favorite_description">Details Button favorite</string>
+    <string name="button_question_description">Button question description</string>
+    <string name="pagination_active_description">Pagination active</string>
+    <string name="pagination_not_active_desription">Pagination not active</string>
+    <string name="image_item_description">Image item</string>
 
     <plurals name="product_hint">
         <item quantity="zero">%d</item>
