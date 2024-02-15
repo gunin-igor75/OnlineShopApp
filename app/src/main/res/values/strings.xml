@@ -18,6 +18,7 @@
     <string name="pagination_active_description">Pagination active</string>
     <string name="pagination_not_active_desription">Pagination not active</string>
     <string name="image_item_description">Image item</string>
+    <string name="icon_point_description">Icon point description</string>
 
     <plurals name="product_hint">
         <item quantity="zero">%d</item>
@@ -25,4 +26,19 @@
         <item quantity="few">%d Товара</item>
         <item quantity="many">%d Товаров</item>
     </plurals>
+
+    <plurals name="product_feedback">
+        <item quantity="zero">%d</item>
+        <item quantity="one">%d отзыв</item>
+        <item quantity="few">%d отзыва</item>
+        <item quantity="many">%d отзывов</item>
+    </plurals>
+
+    <plurals name="product_count">
+        <item quantity="zero">%d</item>
+        <item quantity="one">Доступно для заказа %d штука</item>
+        <item quantity="few">Доступно для заказа %d штуки</item>
+        <item quantity="many">Доступно для заказа %d штук</item>
+    </plurals>
+
 </resources>
