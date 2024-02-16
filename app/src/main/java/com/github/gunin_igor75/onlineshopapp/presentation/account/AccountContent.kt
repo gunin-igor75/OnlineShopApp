@@ -10,6 +10,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +37,7 @@ import com.github.gunin_igor75.onlineshopapp.R
 import com.github.gunin_igor75.onlineshopapp.domain.entity.User
 import com.github.gunin_igor75.onlineshopapp.presentation.account.AutoVisualTransformation.Companion.MASK
 import com.github.gunin_igor75.onlineshopapp.presentation.account.AutoVisualTransformation.Companion.MASK_CHAR_INPUT
+import com.github.gunin_igor75.onlineshopapp.presentation.component.TopBarApp
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.OnlineShopAppTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -50,14 +53,7 @@ fun AccountContent(
         modifier = modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            text = stringResource(R.string.login_title),
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontSize = 16.sp
-            )
-        )
+        TopBarApp(R.string.login)
         Spacer(modifier = Modifier.weight(1f))
         TextFieldText(
             modifier = Modifier.fillMaxWidth(),
@@ -102,6 +98,8 @@ fun AccountContent(
         )
     }
 }
+
+
 
 @Composable
 private fun getBottomText(): AnnotatedString = buildAnnotatedString {
@@ -204,6 +202,14 @@ private fun AccountContentPreview(
             component = AccountComponentPreview(),
             modifier = Modifier.fillMaxSize()
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun TopBarAppPreview() {
+    OnlineShopAppTheme {
+        TopBarApp(R.string.login)
     }
 }
 

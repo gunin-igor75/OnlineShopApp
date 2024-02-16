@@ -2,7 +2,7 @@
     <string name="app_name">OnlineShopApp</string>
     <string name="is_error_message">Enter a valid symbol</string>
     <string name="button_clear_value_description">Button Clear value</string>
-    <string name="login_title">Вход</string>
+    <string name="login">Вход</string>
     <string name="label_name">Имя</string>
     <string name="label_lastname">Фамилия</string>
     <string name="label_phone">Телефон</string>
@@ -26,6 +26,16 @@
     <string name="icon_copy_description">Icon copy description</string>
     <string name="details_compound">Состав</string>
     <string name="details_add_basket">Добавить в корзину</string>
+    <string name="home">Гдавая</string>
+    <string name="catalog">Каталог</string>
+    <string name="basket">Корзина</string>
+    <string name="stock">Акции</string>
+    <string name="profile">Личный кабине</string>
+    <string name="Ic_home_description">Icon home</string>
+    <string name="Ic_catalog_description">Icon catalog</string>
+    <string name="Ic_bag_description">Icon bag</string>
+    <string name="Ic_discount_description">Icon discount</string>
+    <string name="Ic_account_description">Icon account</string>
 
     <plurals name="product_hint">
         <item quantity="zero">%d</item>

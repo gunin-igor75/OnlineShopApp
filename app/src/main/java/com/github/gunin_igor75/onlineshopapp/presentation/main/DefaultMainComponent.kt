@@ -6,6 +6,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.github.gunin_igor75.onlineshopapp.domain.entity.User
 import com.github.gunin_igor75.onlineshopapp.presentation.catalog_details.DefaultCatalogDetailsComponent
@@ -35,15 +36,27 @@ class DefaultMainComponent @AssistedInject constructor(
         childFactory = ::child
     )
 
+    private val _screenState = MutableValue<Screen>(Screen.Home)
+    override val screenState: Value<Screen> = _screenState
+
+    override lateinit var defaultScreen: Screen
+
     override fun onClickNavigation(screen: Screen) {
+        _screenState.value  = screen
         val config = choseScreen(screen)
         navigation.bringToFront(config)
     }
 
     private val choseOpenReason: ChildConfig
         get() = when (openReason) {
-            OpenReason.FIRST -> ChildConfig.Home(user)
-            OpenReason.REPEATED -> ChildConfig.CatalogDetails(user)
+            OpenReason.FIRST -> {
+                _screenState.value = Screen.Home
+                ChildConfig.Home(user)
+            }
+            OpenReason.REPEATED -> {
+                _screenState.value  = Screen.Catalog
+                ChildConfig.CatalogDetails(user)
+            }
         }
 
     private fun child(
@@ -86,11 +99,11 @@ class DefaultMainComponent @AssistedInject constructor(
 
     private fun choseScreen(screen: Screen): ChildConfig {
         return when (screen) {
-            Screen.HOME -> ChildConfig.Home(user)
-            Screen.CATALOG -> ChildConfig.CatalogDetails(user)
-            Screen.BASKET -> ChildConfig.Basket(user)
-            Screen.STOCK -> ChildConfig.Stock(user)
-            Screen.LOGIN -> ChildConfig.LoginFavoriteDetails(user)
+            Screen.Home -> ChildConfig.Home(user)
+            Screen.Catalog -> ChildConfig.CatalogDetails(user)
+            Screen.Basket -> ChildConfig.Basket(user)
+            Screen.Stock -> ChildConfig.Stock(user)
+            Screen.Login -> ChildConfig.LoginFavoriteDetails(user)
         }
     }
 

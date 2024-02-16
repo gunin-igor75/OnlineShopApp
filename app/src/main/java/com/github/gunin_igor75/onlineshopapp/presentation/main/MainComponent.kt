@@ -23,4 +23,7 @@ interface MainComponent {
             val loginFavoriteDetailsComponent: LoginFavoriteDetailsComponent
         ) : Child
     }
+
+    var defaultScreen: Screen
+    val screenState: Value<Screen>
 }
