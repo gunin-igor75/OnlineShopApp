@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -26,7 +25,7 @@ import com.github.gunin_igor75.onlineshopapp.presentation.component.TopBarApp
 import com.github.gunin_igor75.onlineshopapp.presentation.main.basket.BasketContent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.home.HomeContent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.stock.StockContent
-import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.Red
+import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.Pink
 
 
 @Composable
@@ -94,7 +93,7 @@ fun BottomNavigationComponent(
     NavigationBar {
         itemsScreen.forEach { item ->
             val isSelected = selectedItem == item.index
-            val colorLabel = if (isSelected) Red else MaterialTheme.colorScheme.onBackground
+            val colorLabel = if (isSelected) Pink else MaterialTheme.colorScheme.onBackground
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {

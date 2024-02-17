@@ -54,8 +54,8 @@ data class Item(
             ),
             ingredients = "Water, Glycerin Palmitic Acid, Stearic Acid, Myristic Acid, Potassium Hydroxide, Lauric Acid, Cocamidopropyl Betaine, Tea-Lauryl Sulfate, Phenoxyethanol, Sodium Chloride, Acrylates/C10-30 Alkyl Acrylate Crosspolymer, Arachidic Acid, Fragrance, Cellulose Gum, Disodium Edta, Capric Acid, Sodium Benzoate",
             imagesId = listOf(
-                R.drawable.ic_deep,
-                R.drawable.ic_coenzyme
+                R.drawable.image_deep,
+                R.drawable.image_coenzyme
             ),
             isFavorite = false
         )

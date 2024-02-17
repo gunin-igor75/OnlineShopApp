@@ -24,7 +24,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -55,11 +54,14 @@ import com.github.gunin_igor75.onlineshopapp.domain.entity.Feedback
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Info
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Price
+import com.github.gunin_igor75.onlineshopapp.presentation.component.FavoriteButton
 import com.github.gunin_igor75.onlineshopapp.presentation.component.RatingBarStars
+import com.github.gunin_igor75.onlineshopapp.presentation.component.TextCrossed
+import com.github.gunin_igor75.onlineshopapp.presentation.component.TextFill
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.Grey
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.GreyLight
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.OnlineShopAppTheme
-import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.Red
+import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.Pink
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -84,10 +86,7 @@ fun DetailsContent(
                 onClick = component::onClickChangeFavorite
             )
         }
-        SwipeItem(
-            imagesId = state.item.imagesId,
-            block = { Question() }
-        )
+        SwipeItemDetails(imagesId = state.item.imagesId)
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = state.item.title,
@@ -155,7 +154,7 @@ fun AddBasket(
     IconButton(
         modifier = modifier
             .clip(shape)
-            .background(Red),
+            .background(Pink),
         colors = IconButtonDefaults.iconButtonColors(
             contentColor = MaterialTheme.colorScheme.background
         ),
@@ -238,6 +237,7 @@ fun InfoText(
         }
     }
 }
+
 
 @Composable
 fun BrandButton(
@@ -354,54 +354,6 @@ fun RowPrice(
 }
 
 @Composable
-fun TextCrossed(
-    modifier: Modifier = Modifier,
-    text: String,
-    fontSize: Int
-) {
-    val color = MaterialTheme.colorScheme.onBackground
-    Box {
-        Text(
-            text = text,
-            fontSize = fontSize.sp,
-            modifier = Modifier
-                .padding(4.dp)
-                .drawBehind {
-                    drawLine(
-                        start = Offset(x = -4f, y = size.height - size.height / 2.7f),
-                        end = Offset(x = size.width + 4f, y = size.height - size.height / 1.7f),
-                        color = color,
-                        strokeWidth = 3f
-                    )
-                }
-        )
-    }
-}
-
-@Composable
-fun TextFill(
-    modifier: Modifier = Modifier,
-    text: String,
-    fontSize: Int,
-) {
-    val shape = RoundedCornerShape(corner = CornerSize(4.dp))
-    Box(
-        modifier = modifier
-            .clip(shape)
-            .background(Red)
-            .padding(vertical = 1.dp, horizontal = 4.dp)
-    ) {
-        Text(
-            modifier = Modifier,
-            text = text,
-            style = MaterialTheme.typography.bodyMedium.copy(fontSize = fontSize.sp),
-            color = MaterialTheme.colorScheme.background
-        )
-    }
-
-}
-
-@Composable
 private fun RatingFeedback(
     modifier: Modifier = Modifier,
     feedback: Feedback
@@ -436,39 +388,15 @@ private fun RatingFeedback(
             )
         )
     }
-
 }
 
-@Composable
-private fun FavoriteButton(
-    modifier: Modifier = Modifier,
-    isFavorite: Boolean,
-    onClick: () -> Unit
-) {
-    IconButton(
-        modifier = modifier,
-        onClick = onClick
-    ) {
-        val iconId = if (isFavorite) {
-            R.drawable.ic_heart_active
-        } else {
-            R.drawable.ic_heart_default
-        }
-        Icon(
-            imageVector = ImageVector.vectorResource(id = iconId),
-            contentDescription = stringResource(
-                R.string.details_button_favorite_description
-            )
-        )
-    }
-}
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun ColumnScope.SwipeItem(
+fun ColumnScope.SwipeItemDetails(
     modifier: Modifier = Modifier,
     imagesId: List<Int>,
-    block: @Composable () -> Unit = {}
 ) {
     val pageState = rememberPagerState(
         pageCount = { imagesId.size }
@@ -480,7 +408,18 @@ private fun ColumnScope.SwipeItem(
             contentDescription = stringResource(R.string.image_item_description)
         )
     }
-    block()
+    Row(
+        modifier = Modifier
+    ) {
+        IconButton(onClick = {}) {
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_question_default),
+                contentDescription = stringResource(R.string.button_question_description),
+                tint = GreyLight
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
+    }
     Row(
         modifier = Modifier
             .padding(2.dp)
@@ -491,11 +430,12 @@ private fun ColumnScope.SwipeItem(
             if (pageState.currentPage == index) {
                 Icon(
                     imageVector = ImageVector.vectorResource(
-                        id = R.drawable.ic_big_pagination_active
+                        id = R.drawable.elements_
                     ),
                     contentDescription = stringResource(
                         R.string.pagination_active_description
-                    )
+                    ),
+                    tint = Pink
                 )
             } else {
                 Icon(
@@ -504,29 +444,14 @@ private fun ColumnScope.SwipeItem(
                     ),
                     contentDescription = stringResource(
                         R.string.pagination_not_active_desription
-                    )
+                    ),
+                    tint = Grey
                 )
             }
         }
     }
 }
 
-@Composable
-private fun Question(
-    onClick: () -> Unit = {}
-) {
-    Row(
-        modifier = Modifier
-    ) {
-        IconButton(onClick = onClick) {
-            Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_question_default),
-                contentDescription = stringResource(R.string.button_question_description)
-            )
-        }
-        Spacer(modifier = Modifier.weight(1f))
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
