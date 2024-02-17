@@ -77,9 +77,7 @@ fun CardItem(
                 horizontal = 4.dp,
                 vertical = 2.dp
             ),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        )
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     )
     {
         Box {
@@ -88,9 +86,7 @@ fun CardItem(
                     .zIndex(1f)
                     .align(Alignment.TopEnd),
                 isFavorite = item.isFavorite,
-                onClick = {
-                    onClickChangeFavorite(item)
-                }
+                onClick = { onClickChangeFavorite(item) }
             )
             SwipeItemCatalog(imagesId = item.imagesId)
         }

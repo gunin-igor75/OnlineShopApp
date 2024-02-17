@@ -46,6 +46,13 @@
     <string name="suntan">Загар</string>
     <string name="mask">Маски</string>
     <string name="details_feedback_count">%.1f (%d)</string>
+    <string name="icon_arrow_right_description">Icon arrow right</string>
+    <string name="shop">Магазины</string>
+    <string name="icon_shop_description">Icon shop</string>
+    <string name="icon_heart_decription">Icon heart</string>
+    <string name="favorite">Избранное</string>
+    <string name="icon_send_description">Icon send description</string>
+    <string name="icon_account_description">Icon account description</string>
 
     <plurals name="product_hint">
         <item quantity="zero">%d</item>
