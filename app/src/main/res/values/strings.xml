@@ -53,6 +53,13 @@
     <string name="favorite">Избранное</string>
     <string name="icon_send_description">Icon send description</string>
     <string name="icon_account_description">Icon account description</string>
+    <string name="icon_feedback_description">Icon feedback description</string>
+    <string name="feedback">Обратная связь</string>
+    <string name="offer">Оферта</string>
+    <string name="icon_offer_description">Icon offer description</string>
+    <string name="icon_refund_description">Icon refund description</string>
+    <string name="refund">Возврат товара</string>
+    <string name="logout">Выйти</string>
 
     <plurals name="product_hint">
         <item quantity="zero">%d</item>

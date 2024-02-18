@@ -11,12 +11,14 @@ data class User(
     val phone: String
 ): Parcelable{
 
+    val fullName: String
+        get() = "$name $lastname"
     companion object {
         val USER_DEFAULT = User(
             id = 0L,
-            name = "Bob",
-            lastname = "Bobovich",
-            phone = "5555555555"
+            name = "Мария",
+            lastname = "Иванова",
+            phone = "9938774402"
         )
     }
 }

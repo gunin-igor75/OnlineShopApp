@@ -15,3 +15,7 @@ fun ComponentContext.componentScope() = CoroutineScope(
         cancel()
     }
 }
+
+fun String.convertPhone(): String =
+    String.format("+7 ${this.substring(0, 3)} ${this.substring(3, 6)}" +
+            " ${this.substring(6, 8)} ${this.substring(8)}")
