@@ -8,7 +8,7 @@ data class User(
     val id: Long,
     val name: String,
     val lastname: String,
-    val phone: String
+    val phone: String,
 ): Parcelable{
 
     val fullName: String

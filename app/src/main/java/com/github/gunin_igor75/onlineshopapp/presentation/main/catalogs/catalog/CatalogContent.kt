@@ -271,5 +271,4 @@ private fun CardItemPreview() {
             onClickChangeFavorite = {}
         )
     }
-
 }
