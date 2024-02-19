@@ -7,6 +7,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -16,9 +17,11 @@ import com.github.gunin_igor75.onlineshopapp.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarApp(
+    modifier: Modifier = Modifier,
     titleResId: Int
 ) {
     CenterAlignedTopAppBar(
+        modifier = modifier,
         title = {
             Text(
                 text = stringResource(titleResId),
@@ -33,10 +36,12 @@ fun TopBarApp(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarAppWithNav(
+    modifier: Modifier = Modifier,
     titleResId: Int,
     onClickBack: () -> Unit
 ) {
     CenterAlignedTopAppBar(
+        modifier = modifier,
         title = {
             Text(
                 text = stringResource(titleResId),
@@ -63,11 +68,13 @@ fun TopBarAppWithNav(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarAppWithNavAction(
+    modifier: Modifier = Modifier,
     titleResId: Int,
     onClickBack: () -> Unit,
     onClickAction:() -> Unit
 ) {
     CenterAlignedTopAppBar(
+        modifier = modifier,
         title = {
             Text(
                 text = stringResource(titleResId),

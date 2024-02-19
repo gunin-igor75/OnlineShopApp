@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -37,7 +38,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -62,10 +62,12 @@ fun CatalogContent(
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CardItem(
     modifier: Modifier = Modifier,
     item: Item = Item.ITEM_DEFAULT,
+    onClickItem: (Item) -> Unit = {},
     onClickChangeFavorite: (Item) -> Unit = {}
 ) {
 
@@ -76,7 +78,10 @@ fun CardItem(
             .padding(
                 horizontal = 4.dp,
                 vertical = 2.dp
-            ),
+            )
+            .clickable {
+                onClickItem(item)
+            },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     )
     {

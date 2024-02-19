@@ -63,6 +63,10 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
     implementation(libs.icons)
+
+    //constraintLayout
+    implementation(libs.constraintLayout.compose)
+
     //room
     implementation(libs.room.core)
     ksp(libs.room.compilier)
@@ -82,6 +86,8 @@ dependencies {
 
     //gson
     implementation(libs.gson.core)
+
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

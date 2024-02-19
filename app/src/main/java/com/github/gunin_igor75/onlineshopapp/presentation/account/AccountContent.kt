@@ -53,7 +53,7 @@ fun AccountContent(
         modifier = modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TopBarApp(R.string.login)
+        TopBarApp(titleResId = R.string.login)
         Spacer(modifier = Modifier.weight(1f))
         TextFieldText(
             modifier = Modifier.fillMaxWidth(),
@@ -209,7 +209,7 @@ private fun AccountContentPreview(
 @Composable
 private fun TopBarAppPreview() {
     OnlineShopAppTheme {
-        TopBarApp(R.string.login)
+        TopBarApp(titleResId = R.string.login)
     }
 }
 
