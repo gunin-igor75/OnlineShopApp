@@ -32,8 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.gunin_igor75.onlineshopapp.R
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
+import com.github.gunin_igor75.onlineshopapp.presentation.component.CardItem
+import com.github.gunin_igor75.onlineshopapp.presentation.component.ProductsComponent
 import com.github.gunin_igor75.onlineshopapp.presentation.component.TopBarAppWithNav
-import com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.catalog.CardItem
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.Grey
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.GreyLight
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.OnlineShopAppTheme
@@ -86,7 +87,7 @@ fun FavoriteContent(
                     }
 
                     FavoriteScreenType.Products -> {
-                        ProductsScreen(
+                        ProductsComponent(
                             items = state.items,
                             onClickItem = component::onClickItem,
                             onClickChangeFavorite = component::onChangeFavorite
@@ -94,32 +95,6 @@ fun FavoriteContent(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun ProductsScreen(
-    items: List<Item>,
-    onClickItem: (Item) -> Unit,
-    onClickChangeFavorite: (Item) -> Unit
-) {
-    LazyVerticalGrid(
-        modifier = Modifier.fillMaxSize(),
-        columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(
-            items = items,
-            key ={item -> item.id }
-        ){
-            CardItem(
-                item = it,
-                onClickItem = onClickItem,
-                onClickChangeFavorite = onClickChangeFavorite
-            )
         }
     }
 }

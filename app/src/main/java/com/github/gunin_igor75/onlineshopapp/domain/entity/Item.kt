@@ -135,7 +135,7 @@ data class Item(
                     R.drawable.image_deep,
                     R.drawable.image_coenzyme
                 ),
-                isFavorite = false
+                isFavorite = true
             ),
             Item(
                 id = "75c84407-52e1-4cce-a73a-ff2d3ac031b3",

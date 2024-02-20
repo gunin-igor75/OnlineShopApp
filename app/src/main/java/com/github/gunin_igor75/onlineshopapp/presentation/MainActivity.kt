@@ -3,11 +3,9 @@ package com.github.gunin_igor75.onlineshopapp.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.arkivanov.decompose.defaultComponentContext
 import com.github.gunin_igor75.onlineshopapp.OnlineShopApp
-import com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.catalog.CardItem
+import com.github.gunin_igor75.onlineshopapp.presentation.component.CardItem
 import com.github.gunin_igor75.onlineshopapp.presentation.root.DefaultRootComponent
-import com.github.gunin_igor75.onlineshopapp.presentation.root.RootContent
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.OnlineShopAppTheme
 import javax.inject.Inject
 

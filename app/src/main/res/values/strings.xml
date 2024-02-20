@@ -39,15 +39,16 @@
     <string name="Ic_bag_description">Icon bag</string>
     <string name="Ic_discount_description">Icon discount</string>
     <string name="Ic_account_description">Icon account</string>
-    <string name="sort_rating">По популярности</string>
-    <string name="sort_priceDesc">По уменьшеню цены</string>
-    <string name="sort_priceAsc">По возрастанию цены</string>
+    <string name="Ic_sort_by_description">Icon sort by</string>
     <string name="filters">Фильтры</string>
     <string name="all">Смотреть все</string>
     <string name="face">Лицо</string>
     <string name="body">Тело</string>
     <string name="suntan">Загар</string>
     <string name="mask">Маски</string>
+    <string name="sort_rating">По популярности</string>
+    <string name="sort_priceDesc">По уменьшеню цены</string>
+    <string name="sort_priceAsc">По возрастанию цены</string>
     <string name="details_feedback_count">%.1f (%d)</string>
     <string name="icon_arrow_right_description">Icon arrow right</string>
     <string name="shop">Магазины</string>
@@ -64,6 +65,8 @@
     <string name="refund">Возврат товара</string>
     <string name="logout">Выйти</string>
     <string name="icon_arrow_left_description">Icon arrow left description</string>
+    <string name="icon_arrow_down_description">Icon arrow down</string>
+    <string name="Ic_filter_description">Icon filter</string>
 
     <plurals name="product_hint">
         <item quantity="zero">%d</item>
