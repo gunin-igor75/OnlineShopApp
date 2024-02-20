@@ -207,6 +207,7 @@ private class FavoriteComponentPreview : FavoriteComponent {
         )
 
     override fun onClickBack() {}
-    override fun onClickItem(item: Item) {}
+    override fun onClickItem(item: Item) {
+    }
     override fun onChangeFavorite(item: Item) {}
 }

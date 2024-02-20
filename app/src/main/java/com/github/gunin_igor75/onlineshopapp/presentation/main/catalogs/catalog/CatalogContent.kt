@@ -9,22 +9,35 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,19 +63,28 @@ import com.github.gunin_igor75.onlineshopapp.presentation.component.FavoriteButt
 import com.github.gunin_igor75.onlineshopapp.presentation.component.TextCrossed
 import com.github.gunin_igor75.onlineshopapp.presentation.component.TextFill
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.Grey
+import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.GreyLight
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.OnlineShopAppTheme
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.Orange
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.Pink
+
+typealias OnClick = () -> Unit
+
 
 @Composable
 fun CatalogContent(
     component: CatalogComponent
 ) {
-
+    val tags: List<Tag> = listOf(
+        Tag(0, R.string.all, component::choseAll),
+        Tag(1, R.string.face, component::choseFace),
+        Tag(2, R.string.body, component::choseBody),
+        Tag(3, R.string.suntan, component::choseSuntan),
+        Tag(4, R.string.mask, component::choseMask)
+    )
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CardItem(
     modifier: Modifier = Modifier,
@@ -78,10 +100,7 @@ fun CardItem(
             .padding(
                 horizontal = 4.dp,
                 vertical = 2.dp
-            )
-            .clickable {
-                onClickItem(item)
-            },
+            ),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     )
     {
@@ -93,7 +112,12 @@ fun CardItem(
                 isFavorite = item.isFavorite,
                 onClick = { onClickChangeFavorite(item) }
             )
-            SwipeItemCatalog(imagesId = item.imagesId)
+            SwipeItemCatalog(
+                imagesId = item.imagesId,
+                onclick = {
+                    onClickItem(item)
+                }
+            )
         }
 
         val oldPrice = "${item.price.price} ${item.price.unit}"
@@ -178,6 +202,7 @@ private fun getTextRating(feedback: Feedback): AnnotatedString = buildAnnotatedS
 fun SwipeItemCatalog(
     modifier: Modifier = Modifier,
     imagesId: List<Int>,
+    onclick: () -> Unit
 ) {
     val pageState = rememberPagerState(
         pageCount = { imagesId.size }
@@ -187,7 +212,8 @@ fun SwipeItemCatalog(
             Image(
                 modifier = Modifier
                     .width(170.dp)
-                    .height(130.dp),
+                    .height(130.dp)
+                    .clickable { onclick() },
                 painter = painterResource(id = imagesId[page]),
                 contentDescription = stringResource(R.string.image_item_description)
             )
@@ -224,7 +250,6 @@ fun SwipeItemCatalog(
             }
         }
     }
-
 }
 
 @Composable
@@ -259,6 +284,89 @@ private fun ButtonAddBasket(
     )
 }
 
+@Composable
+private fun CarouselTag(
+    modifier: Modifier = Modifier,
+    tags: List<Tag>
+) {
+    var selectedIndex = rememberSaveable {
+        mutableStateOf(0)
+    }
+
+    LazyRow(
+        modifier = modifier.wrapContentSize(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(
+            items = tags,
+            key = { it.index }
+        ) {
+            val selected = selectedIndex.value == it.index
+            ButtonTag(
+                tag = it,
+                state = selectedIndex,
+                selected =selected
+            )
+        }
+    }
+}
+
+@Composable
+private fun ButtonTag(
+    modifier: Modifier = Modifier,
+    tag: Tag,
+    state: MutableState<Int>,
+    selected: Boolean
+) {
+    val contentColor = if (selected) MaterialTheme.colorScheme.background else Grey
+    val containerColor = if (selected) Grey else GreyLight
+    val colors = ButtonDefaults.buttonColors(
+        contentColor = contentColor,
+        containerColor = containerColor
+    )
+    Button(
+        onClick = {
+            state.value = tag.index
+            tag.onclick
+        },
+        colors = colors
+    )
+    {
+        Text(text = stringResource(id = tag.stringResId))
+        Spacer(modifier = Modifier.width(8.dp))
+        Icon(
+            imageVector = Icons.Filled.Clear,
+            contentDescription = stringResource(
+                id = R.string.button_clear_value_description
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ButtonTagPreview() {
+    ButtonTag(
+        tag = Tag(0, R.string.all, {}),
+        state = mutableStateOf(0),
+        selected = false
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CarouselTagPreview() {
+    CarouselTag(
+        tags = listOf(
+            Tag(0, R.string.all, {}),
+            Tag(1, R.string.face, {}),
+            Tag(2, R.string.body, {}),
+            Tag(3, R.string.suntan, {}),
+            Tag(4, R.string.mask, {})
+        )
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun ButtonAddBasketPreview(
@@ -277,3 +385,9 @@ private fun CardItemPreview() {
         )
     }
 }
+
+private data class Tag(
+    val index: Int,
+    val stringResId: Int,
+    val onclick: OnClick
+)
