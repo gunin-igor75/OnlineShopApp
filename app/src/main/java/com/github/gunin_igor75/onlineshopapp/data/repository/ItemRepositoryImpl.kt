@@ -5,42 +5,42 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.room.Transaction
 import com.github.gunin_igor75.onlineshopapp.R
 import com.github.gunin_igor75.onlineshopapp.data.local.db.ItemDao
-import com.github.gunin_igor75.onlineshopapp.data.local.db.UserDao
 import com.github.gunin_igor75.onlineshopapp.data.local.model.UserItemDbModel
 import com.github.gunin_igor75.onlineshopapp.data.mapper.toItems
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
 import com.github.gunin_igor75.onlineshopapp.domain.repository.ItemRepository
+import com.github.gunin_igor75.onlineshopapp.domain.repository.UserRepository
 import com.github.gunin_igor75.onlineshopapp.extentions.getIndex
 import com.github.gunin_igor75.onlineshopapp.utils.UIContentDto
 import com.github.gunin_igor75.onlineshopapp.utils.readJsonFromAssets
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ItemRepositoryImpl @Inject constructor(
     private val itemDao: ItemDao,
-    private val userDao: UserDao,
+    private val userRepo: UserRepository,
     private val context: Context
 ) : ItemRepository {
 
     private var _items: MutableList<Item>
-    private val items
-        get() = _items.toList()
 
-    private val itemsChangeEvents = MutableSharedFlow<Unit>(replay = 1).apply {
-        tryEmit(Unit)
-    }
+    private val _dataItems: MutableStateFlow<List<Item>> = MutableStateFlow(listOf())
 
     private val sortState = mutableStateOf(SortState.RATING)
 
-    private val currentUser = mutableStateOf(0L)
+    private val filterState = mutableStateOf(FilterState.ALL)
 
-    private val itemsDefault: List<Item>
-
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     init {
         val jsonString = readJsonFromAssets(context, MOCK_JSON)
@@ -49,72 +49,61 @@ class ItemRepositoryImpl @Inject constructor(
             addAll(fakeItems.items.toItems())
             sortedByDescending { it.feedback.rating }
         }
-        itemsDefault = items
+        _dataItems.value = _items
     }
 
-    override fun getCountFavorite(userId: Long): Flow<String> =
-        itemDao.getCountFavorite(userId)
-            .map { transformString(it) }
-
-    override fun getItems(userId: Long): Flow<List<Item>> = flow {
-        currentUser.value = userId
-        setupFavorite(_items)
-        itemsChangeEvents.collect {
-            emit(items)
-        }
+    override fun getItems(userId: Long): StateFlow<List<Item>> {
+        scope.launch { setupFavorite() }
+        return _dataItems.asStateFlow()
     }
 
     override fun getSortFeedbackDesc() {
         sortState.value = SortState.RATING
-        _items.sortedByDescending { it.feedback.rating }
-        itemsChangeEvents.tryEmit(Unit)
+        val temp = getFilterList().sortedByDescending { it.feedback.rating }
+        _dataItems.value = temp
     }
 
     override fun getSortPriceDesc() {
         sortState.value = SortState.PRICE_DESC
-        _items.sortedByDescending { it.price.priceWithDiscount }
-        itemsChangeEvents.tryEmit(Unit)
+        val temp = getFilterList().sortedByDescending { it.price.priceWithDiscount }
+        _dataItems.value = temp
     }
 
     override fun getSortPriceAsc() {
         sortState.value = SortState.PRICE_ASC
-        _items.sortedBy { it.price.priceWithDiscount }
-        itemsChangeEvents.tryEmit(Unit)
+        val temp = getFilterList().sortedBy { it.price.priceWithDiscount }
+        _dataItems.value = temp
     }
 
-    override suspend fun getChoseAll() {
-        val temp = executeFilter(FilterState.ALL)
-        _items = temp.toMutableList()
-        executeSort()
+    override fun getChoseAll() {
+        filterState.value = FilterState.ALL
+        val temp = sortByState(_items)
+        _dataItems.value = temp
     }
 
-    override suspend fun getChoseFace() {
-        val temp = executeFilter(FilterState.FACE)
-        _items = temp.toMutableList()
-        executeSort()
+    override fun getChoseFace() {
+        filterState.value = FilterState.FACE
+        val temp = sortByState(getFilterList())
+        _dataItems.value = temp
     }
 
-    override suspend fun getChoseBody() {
-        val temp = executeFilter(FilterState.BODY)
-        _items = temp.toMutableList()
-        executeSort()
+    override fun getChoseBody() {
+        filterState.value = FilterState.BODY
+        val temp = sortByState(getFilterList())
+        _dataItems.value = temp
     }
 
-    override suspend fun getChoseSuntan() {
-        val temp = executeFilter(FilterState.SUNTAN)
-        _items = temp.toMutableList()
-        executeSort()
+    override fun getChoseSuntan() {
+        filterState.value = FilterState.SUNTAN
+        val temp = sortByState(getFilterList())
+        _dataItems.value = temp
     }
 
-    override suspend fun getChoseMask() {
-        val temp = executeFilter(FilterState.MASK)
-        _items = temp.toMutableList()
-        executeSort()
+    override fun getChoseMask() {
+        filterState.value = FilterState.MASK
+        val temp = sortByState(getFilterList())
+        _dataItems.value = temp
     }
-
-    override fun observeIsFavorite(userId: Long, itemId: String): Flow<Boolean> =
-        itemDao.observeIsFavorite(userId, itemId)
-
 
     override suspend fun saveFavoriteItem(userId: Long, itemId: String) {
         val index = _items.getIndex(itemId)
@@ -122,7 +111,8 @@ class ItemRepositoryImpl @Inject constructor(
         val userItem = UserItemDbModel(userId, itemId)
         itemDao.insertUserItem(userItem)
         _items[index] = _items[index].copy(isFavorite = true)
-        itemsChangeEvents.tryEmit(Unit)
+        val temp = sortByState(getFilterList())
+        _dataItems.value = temp
     }
 
     override suspend fun deleteFavoriteItem(userId: Long, itemId: String) {
@@ -131,20 +121,18 @@ class ItemRepositoryImpl @Inject constructor(
         val userItem = UserItemDbModel(userId, itemId)
         itemDao.deleteUserItem(userItem)
         _items[index] = _items[index].copy(isFavorite = false)
-        itemsChangeEvents.tryEmit(Unit)
+        val temp = sortByState(getFilterList())
+        _dataItems.value = temp
     }
 
-    @Transaction
-    override suspend fun deleteAllInfo() {
-        itemDao.deleteUserSItems()
-        userDao.deleteUsers()
-    }
+    override fun observeIsFavorite(userId: Long, itemId: String): Flow<Boolean> =
+        itemDao.observeIsFavorite(userId, itemId)
 
     override fun getFavorites(userId: Long): Flow<List<Item>> = flow {
         val favorites = itemDao.getItemsIdIsFavorite(userId)
-        favorites.collect{itemId ->
+        favorites.collect { itemId ->
             val result = mutableListOf<Item>()
-            _items.forEach {item ->
+            _items.forEach { item ->
                 if (item.id == itemId) {
                     result.add(item)
                 }
@@ -152,53 +140,49 @@ class ItemRepositoryImpl @Inject constructor(
             emit(result)
         }
     }
-    private suspend fun setupFavorite(list: MutableList<Item>) {
-        val favorites = itemDao.getItemsIdIsFavorite(currentUser.value).toList()
-        (0 until list.size).forEach { index ->
-            if (favorites.contains(list[index].id)) {
-                list[index] = list[index].copy(isFavorite = true)
-            }
-        }
+
+    override fun getCountFavorite(userId: Long): Flow<String> =
+        itemDao.getCountFavorite(userId)
+            .map { transformString(it) }
+
+    @Transaction
+    override suspend fun deleteAllInfo() {
+        val currentUserId = userRepo.currentUser.value
+        itemDao.deleteUserSItems(currentUserId)
+        userRepo.deleteUser(currentUserId)
     }
 
-    private suspend fun executeFilter(state: FilterState): List<Item> {
-        val list = itemsDefault.toMutableList()
-        setupFavorite(list)
-        return when (state) {
+    private fun getFilterList(): List<Item>  =
+        when(val filter = filterState.value){
             FilterState.ALL -> {
-                list.toList()
+                _items.toList()
             }
-
-            FilterState.FACE -> {
-                list.filter { it.tags.contains(FACE) }
-            }
-
-            FilterState.BODY -> {
-                list.filter { it.tags.contains(BODY) }
-            }
-
-            FilterState.SUNTAN -> {
-                list.filter { it.tags.contains(SUNTAN) }
-            }
-
-            FilterState.MASK -> {
-                list.filter { it.tags.contains(MASK) }
+            else -> {
+                _items.filter { it.tags.contains(filter.param) }
             }
         }
-    }
 
-    private fun executeSort() {
+    private fun sortByState(list: List<Item>): List<Item> =
         when (sortState.value) {
             SortState.RATING -> {
-                getSortFeedbackDesc()
+                list.sortedByDescending { it.feedback.rating }
             }
 
             SortState.PRICE_DESC -> {
-                getSortPriceDesc()
+                list.sortedByDescending { it.price.priceWithDiscount }
             }
 
             SortState.PRICE_ASC -> {
-                getSortPriceAsc()
+                list.sortedBy { it.price.priceWithDiscount }
+            }
+        }
+
+    private suspend fun setupFavorite() {
+        val currentUser = userRepo.currentUser.value
+        val favorites = itemDao.getItemsIdIsFavorite(currentUser).toList()
+        (0 until _items.size).forEach { index ->
+            if (favorites.contains(_items[index].id)) {
+                _items[index] = _items[index].copy(isFavorite = true)
             }
         }
     }
@@ -209,9 +193,5 @@ class ItemRepositoryImpl @Inject constructor(
 
     companion object {
         private const val MOCK_JSON = "data.json"
-        private const val FACE = "face"
-        private const val BODY = "body"
-        private const val SUNTAN = "suntan"
-        private const val MASK = "mask"
     }
 }

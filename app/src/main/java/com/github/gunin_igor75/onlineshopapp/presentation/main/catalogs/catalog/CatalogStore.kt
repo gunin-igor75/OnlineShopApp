@@ -116,9 +116,7 @@ class CatalogStoreFactory @Inject constructor(
                 }
 
                 Intent.ClickChoseAll -> {
-                    scope.launch {
-                        getChoseAllUseCase()
-                    }
+                    getChoseAllUseCase()
                 }
 
                 is Intent.ClickItem -> {
@@ -138,27 +136,19 @@ class CatalogStoreFactory @Inject constructor(
                 }
 
                 Intent.ClickChoseBody -> {
-                    scope.launch {
-                        getChoseBodyUseCase()
-                    }
+                    getChoseBodyUseCase()
                 }
 
                 Intent.ClickChoseFace -> {
-                    scope.launch {
-                        getChoseFaceUseCase()
-                    }
+                    getChoseFaceUseCase()
                 }
 
                 Intent.ClickChoseMask -> {
-                    scope.launch {
-                        getChoseMaskUseCase()
-                    }
+                    getChoseMaskUseCase()
                 }
 
                 Intent.ClickChoseSuntan -> {
-                    scope.launch {
-                        getChoseSuntanUseCase()
-                    }
+                    getChoseSuntanUseCase()
                 }
             }
         }

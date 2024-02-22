@@ -19,6 +19,9 @@ interface UserDao {
     @Query("DELETE FROM users")
     suspend fun deleteUsers()
 
+    @Query("DELETE  FROM users WHERE id = :userId ")
+    suspend fun deleteUser(userId: Long)
+
     @Query("SELECT EXISTS(SELECT * FROM users WHERE id = :userId LIMIT 1)")
     suspend fun existsUserById(userId: Long): Boolean
 

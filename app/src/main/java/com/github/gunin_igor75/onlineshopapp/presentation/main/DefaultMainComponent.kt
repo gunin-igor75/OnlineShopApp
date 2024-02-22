@@ -1,6 +1,7 @@
 package com.github.gunin_igor75.onlineshopapp.presentation.main
 
 import android.os.Parcelable
+import androidx.compose.runtime.MutableState
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -17,6 +18,8 @@ import com.github.gunin_igor75.onlineshopapp.presentation.main.stock.DefaultStoc
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.parcelize.Parcelize
 
 class DefaultMainComponent @AssistedInject constructor(
@@ -29,35 +32,36 @@ class DefaultMainComponent @AssistedInject constructor(
 
     private val navigation = StackNavigation<ChildConfig>()
 
+    private val _screenState = MutableStateFlow<Screen>(Screen.Home)
+
+    override val screenState: StateFlow<Screen> = _screenState
+
     override val childStack: Value<ChildStack<*, MainComponent.Child>> = childStack(
         source = navigation,
-        initialConfiguration = choseOpenReason,
+        initialConfiguration = choseOpenReason(),
         handleBackButton = true,
         childFactory = ::child
     )
 
-    private val _screenState = MutableValue<Screen>(Screen.Home)
-    override val screenState: Value<Screen> = _screenState
-
-    override lateinit var defaultScreen: Screen
-
     override fun onClickNavigation(screen: Screen) {
-        _screenState.value  = screen
+        _screenState.value = screen
         val config = choseScreen(screen)
         navigation.bringToFront(config)
     }
 
-    private val choseOpenReason: ChildConfig
-        get() = when (openReason) {
+    private fun choseOpenReason(): ChildConfig {
+        return when (openReason) {
             OpenReason.FIRST -> {
                 _screenState.value = Screen.Home
                 ChildConfig.Home(user)
             }
+
             OpenReason.REPEATED -> {
-                _screenState.value  = Screen.Catalog
+                _screenState.value = Screen.Catalog
                 ChildConfig.CatalogDetails(user)
             }
         }
+    }
 
     private fun child(
         config: ChildConfig,
@@ -126,7 +130,6 @@ class DefaultMainComponent @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-
         fun create(
             @Assisted("user") user: User,
             @Assisted("openReason") openReason: OpenReason,

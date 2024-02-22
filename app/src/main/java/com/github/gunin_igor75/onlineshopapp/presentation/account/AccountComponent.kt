@@ -12,5 +12,5 @@ interface AccountComponent {
     fun onClearName()
     fun onClearLastname()
     fun onClearPhone()
-    fun onClickLogin(user: User)
+    fun onClickLogin()
 }

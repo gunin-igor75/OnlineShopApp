@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -23,7 +24,9 @@ import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import com.github.gunin_igor75.onlineshopapp.R
 import com.github.gunin_igor75.onlineshopapp.presentation.component.TopBarApp
 import com.github.gunin_igor75.onlineshopapp.presentation.main.basket.BasketContent
+import com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.CatalogDetailsContent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.home.HomeContent
+import com.github.gunin_igor75.onlineshopapp.presentation.main.profile.LoginFavoriteDetailsContent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.stock.StockContent
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.Pink
 
@@ -32,7 +35,7 @@ import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.Pink
 fun MainContent(
     component: MainComponent
 ) {
-    val stateScreen = component.screenState.subscribeAsState()
+    val stateScreen = component.screenState.collectAsState()
 
     Crossfade(targetState = stateScreen, label = "") { screen ->
         Scaffold(
@@ -54,7 +57,10 @@ fun MainContent(
                     }
 
                     is MainComponent.Child.CatalogDetailsChild -> {
-
+                        CatalogDetailsContent(
+                            paddingValues = paddingValues,
+                            component = instance.catalogDetailsComponent
+                        )
                     }
 
                     is MainComponent.Child.HomeChild -> {
@@ -65,7 +71,10 @@ fun MainContent(
                     }
 
                     is MainComponent.Child.LoginFavoriteDetailsChild -> {
-
+                        LoginFavoriteDetailsContent(
+                            paddingValues = paddingValues,
+                            component = instance.loginFavoriteDetailsComponent
+                        )
                     }
 
                     is MainComponent.Child.StockChild -> {

@@ -63,7 +63,7 @@ class DefaultAccountComponent @AssistedInject constructor(
         store.accept(AccountStore.Intent.ClearPhone)
     }
 
-    override fun onClickLogin(user: User) {
+    override fun onClickLogin() {
         store.accept(AccountStore.Intent.ClickSaveUser)
     }
 

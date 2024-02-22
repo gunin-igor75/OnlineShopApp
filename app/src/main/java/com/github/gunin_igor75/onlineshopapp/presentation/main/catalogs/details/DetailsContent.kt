@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,9 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -67,13 +64,13 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun DetailsContent(
+    paddingValues: PaddingValues = PaddingValues(),
     component: DetailsComponent,
-    modifier: Modifier = Modifier
 ) {
     val state by component.model.collectAsState()
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .verticalScroll(rememberScrollState()),
     ) {
@@ -458,9 +455,6 @@ fun ColumnScope.SwipeItemDetails(
 private fun DetailsContentPreview() {
     OnlineShopAppTheme {
         DetailsContent(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
             component = DetailsComponentPreview()
         )
     }

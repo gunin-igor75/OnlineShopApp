@@ -61,7 +61,7 @@ class DefaultCatalogDetailsComponent @AssistedInject constructor(
                 )
                 CatalogDetailsComponent.Child.DetailsChild(component)
             }
-        }
+       }
     }
 
     private sealed interface ChildConfig : Parcelable {

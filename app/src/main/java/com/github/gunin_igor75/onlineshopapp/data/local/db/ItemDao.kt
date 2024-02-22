@@ -20,6 +20,6 @@ interface ItemDao {
     suspend fun insertUserItem(userItemDbModel: UserItemDbModel)
     @Delete
     suspend fun deleteUserItem(userItemDbModel: UserItemDbModel)
-    @Query("DELETE FROM users_items")
-    suspend fun deleteUserSItems()
+    @Query("DELETE FROM users_items WHERE user_id = :userId")
+    suspend fun deleteUserSItems(userId: Long)
 }

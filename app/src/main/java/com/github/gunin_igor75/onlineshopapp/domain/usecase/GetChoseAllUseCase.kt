@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetChoseAllUseCase @Inject constructor(
     private val repository: ItemRepository
 ) {
-    suspend operator fun invoke() = repository.getChoseAll()
+    operator fun invoke() = repository.getChoseAll()
 }

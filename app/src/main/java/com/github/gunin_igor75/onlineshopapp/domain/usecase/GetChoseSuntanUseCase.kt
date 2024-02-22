@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetChoseSuntanUseCase @Inject constructor(
     private val repository: ItemRepository
 ) {
-    suspend operator fun invoke() = repository.getChoseSuntan()
+    operator fun invoke() = repository.getChoseSuntan()
 }

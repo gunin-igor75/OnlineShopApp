@@ -7,6 +7,7 @@ import com.github.gunin_igor75.onlineshopapp.presentation.login_favorite_details
 import com.github.gunin_igor75.onlineshopapp.presentation.main.basket.BasketComponent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.home.HomeComponent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.stock.StockComponent
+import kotlinx.coroutines.flow.StateFlow
 
 interface MainComponent {
 
@@ -24,6 +25,5 @@ interface MainComponent {
         ) : Child
     }
 
-    var defaultScreen: Screen
-    val screenState: Value<Screen>
+    val screenState: StateFlow<Screen>
 }

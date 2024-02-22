@@ -2,6 +2,7 @@ package com.github.gunin_igor75.onlineshopapp.presentation.main.profile.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,12 +41,14 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun LoginContent(
+    paddingValues: PaddingValues = PaddingValues(),
     component: LoginComponent
 ) {
     val state by component.model.collectAsState()
 
     Column(
         modifier = Modifier
+            .padding(paddingValues)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .background(MaterialTheme.colorScheme.surface)

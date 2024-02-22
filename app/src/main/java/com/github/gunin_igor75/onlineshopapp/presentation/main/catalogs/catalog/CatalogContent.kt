@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,6 +50,7 @@ typealias OnClick = () -> Unit
 @Composable
 fun CatalogContent(
     modifier: Modifier = Modifier,
+    paddingValues: PaddingValues = PaddingValues(),
     component: CatalogComponent
 ) {
     val state by component.model.collectAsState()
@@ -67,6 +69,7 @@ fun CatalogContent(
     )
     ConstraintLayout(
         modifier = modifier
+            .padding(paddingValues)
             .fillMaxSize()
             .padding(8.dp)
     ) {
@@ -157,7 +160,11 @@ private fun SortSpinner(
                 tags.forEach {
                     DropdownMenuItem(
                         text = { Text(text = stringResource(id = it.stringResId)) },
-                        onClick = it.onclick
+                        onClick = {
+                            it.onclick()
+                            expanded.value = false
+                            currentValue.value = it.stringResId
+                        }
                     )
                 }
             }
@@ -235,7 +242,7 @@ private fun ButtonTag(
             .padding(4.dp)
             .clickable {
                 state.value = tag.index
-                tag.onclick
+                tag.onclick()
             },
 
         ) {

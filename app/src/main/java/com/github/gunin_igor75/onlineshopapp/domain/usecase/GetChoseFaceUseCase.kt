@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetChoseFaceUseCase @Inject constructor(
     private val repository: ItemRepository
 ) {
-    suspend operator fun invoke() = repository.getChoseFace()
+    operator fun invoke() = repository.getChoseFace()
 }

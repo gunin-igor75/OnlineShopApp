@@ -10,11 +10,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -34,7 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.gunin_igor75.onlineshopapp.R
-import com.github.gunin_igor75.onlineshopapp.domain.entity.User
 import com.github.gunin_igor75.onlineshopapp.presentation.account.AutoVisualTransformation.Companion.MASK
 import com.github.gunin_igor75.onlineshopapp.presentation.account.AutoVisualTransformation.Companion.MASK_CHAR_INPUT
 import com.github.gunin_igor75.onlineshopapp.presentation.component.TopBarApp
@@ -86,7 +82,7 @@ fun AccountContent(
         Button(
             modifier = Modifier.fillMaxWidth(),
             shape = shape,
-            onClick = {}
+            onClick = component::onClickLogin
         ) {
             Text(text = stringResource(id = R.string.login_button))
         }
@@ -230,6 +226,6 @@ private class AccountComponentPreview : AccountComponent {
     override fun onClearName() {}
     override fun onClearLastname() {}
     override fun onClearPhone() {}
-    override fun onClickLogin(user: User) {}
+    override fun onClickLogin() {}
 
 }
