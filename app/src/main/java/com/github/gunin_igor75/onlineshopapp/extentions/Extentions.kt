@@ -7,7 +7,6 @@ fun String.isCheckUsername(): Boolean {
     return pattern.matches(this).not()
 }
 
-
 fun String.isCheckPhone(): Boolean {
     val pattern = Regex("[0-9]+")
     return pattern.matches(this).not()

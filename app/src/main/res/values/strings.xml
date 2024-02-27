@@ -26,11 +26,12 @@
     <string name="icon_copy_description">Icon copy description</string>
     <string name="details_compound">Состав</string>
     <string name="details_add_basket">Добавить в корзину</string>
-    <string name="title_home">Гдавая</string>
+    <string name="title_home">Главная</string>
     <string name="title_catalog">Каталог</string>
     <string name="title_basket">Корзина</string>
     <string name="title_stock">Акции</string>
-    <string name="title_profile">Личный кабине</string>
+    <string name="title_profile_top_bar">Личный кабинет</string>
+    <string name="title_profile">Профиль</string>
     <string name="title_favorite">Избранное</string>
     <string name="title_product">Товары</string>
     <string name="title_brand">Брэнды</string>

@@ -18,6 +18,8 @@ class UserRepositoryImpl @Inject constructor(
 
     override val currentUser = _currentUser.asStateFlow()
 
+    override fun checkPhoneLength(phone: String):Boolean = phone.length == 10
+
     override suspend fun insertUser(signData: SignData): Long {
         val uerId = userDao.insertUser(signData.toUserDbModel())
         _currentUser.value = uerId

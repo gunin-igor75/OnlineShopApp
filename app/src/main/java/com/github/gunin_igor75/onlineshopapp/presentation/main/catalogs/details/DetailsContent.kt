@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -46,6 +47,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.gunin_igor75.onlineshopapp.R
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Feedback
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Info
@@ -55,6 +57,7 @@ import com.github.gunin_igor75.onlineshopapp.presentation.component.FavoriteButt
 import com.github.gunin_igor75.onlineshopapp.presentation.component.RatingBarStars
 import com.github.gunin_igor75.onlineshopapp.presentation.component.TextCrossed
 import com.github.gunin_igor75.onlineshopapp.presentation.component.TextFill
+import com.github.gunin_igor75.onlineshopapp.presentation.component.TopBarAppWithNavActionNotTitle
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.Grey
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.GreyLight
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.OnlineShopAppTheme
@@ -64,14 +67,37 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun DetailsContent(
-    paddingValues: PaddingValues = PaddingValues(),
+    modifier: Modifier = Modifier,
     component: DetailsComponent,
 ) {
     val state by component.model.collectAsState()
 
     Column(
-        modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp)
+        modifier = modifier.fillMaxSize()
+    ) {
+        TopBarAppWithNavActionNotTitle(
+            onClickBack = component::onClickBack,
+            onClickAction = {/*TODO()**/ },
+        )
+        BodyContent(
+            state = state,
+            component = component,
+        )
+    }
+}
+
+@Composable
+private fun BodyContent(
+    modifier: Modifier = Modifier,
+    state: DetailsStore.State,
+    component: DetailsComponent
+) {
+    Column(
+        modifier = modifier
+            .padding(
+                start = 16.dp,
+                end = 4.dp,
+            )
             .verticalScroll(rememberScrollState()),
     ) {
         Row(
@@ -386,7 +412,6 @@ private fun RatingFeedback(
         )
     }
 }
-
 
 
 @OptIn(ExperimentalFoundationApi::class)

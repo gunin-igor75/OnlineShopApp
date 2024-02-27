@@ -6,6 +6,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -83,6 +84,43 @@ fun TopBarAppWithNavAction(
                 )
             )
         },
+        navigationIcon = {
+            IconButton(onClick = onClickBack) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(
+                        id = R.drawable.ic_left_arrow_default
+                    ),
+                    contentDescription = stringResource(
+                        R.string.icon_arrow_left_description
+                    )
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = onClickAction) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(
+                        id = R.drawable.ic_send_default
+                    ),
+                    contentDescription = stringResource(
+                        R.string.icon_send_description
+                    )
+                )
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopBarAppWithNavActionNotTitle(
+    modifier: Modifier = Modifier,
+    onClickBack: () -> Unit,
+    onClickAction:() -> Unit
+) {
+    TopAppBar(
+        modifier = modifier,
+        title = {},
         navigationIcon = {
             IconButton(onClick = onClickBack) {
                 Icon(

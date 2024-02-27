@@ -4,10 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -35,10 +34,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.gunin_igor75.onlineshopapp.R
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
 import com.github.gunin_igor75.onlineshopapp.presentation.component.ProductsComponent
+import com.github.gunin_igor75.onlineshopapp.presentation.component.TopBarApp
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.Grey
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.GreyLight
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,7 +49,6 @@ typealias OnClick = () -> Unit
 @Composable
 fun CatalogContent(
     modifier: Modifier = Modifier,
-    paddingValues: PaddingValues = PaddingValues(),
     component: CatalogComponent
 ) {
     val state by component.model.collectAsState()
@@ -67,47 +65,20 @@ fun CatalogContent(
         Tag(2, R.string.sort_priceDesc, component::sortPriceDesc),
         Tag(3, R.string.sort_priceAsc, component::sortPriceAsc),
     )
-    ConstraintLayout(
-        modifier = modifier
-            .padding(paddingValues)
-            .fillMaxSize()
-            .padding(8.dp)
+    Column(
+        modifier = modifier.padding(horizontal = 8.dp)
     ) {
-        val (sortSpinner, filterSpinner, carouselTag, bodyContent) = createRefs()
-        SortSpinner(
-            tags = spinners,
-            modifier = modifier
-                .constrainAs(sortSpinner) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                }
-        )
-        FilterSpinner(
-            modifier = modifier
-                .constrainAs(filterSpinner) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                }
-        )
-        CarouselTag(
-            tags = tags,
-            modifier = modifier
-                .constrainAs(carouselTag) {
-                    top.linkTo(sortSpinner.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-        )
+        TopBarApp(titleResId = R.string.title_catalog)
+        Row {
+            SortSpinner(tags = spinners)
+            Spacer(modifier = Modifier.weight(1f))
+            FilterSpinner()
+        }
+        CarouselTag(tags = tags)
         ProductsComponent(
             items = state.items,
             onClickItem = component::onItem,
             onClickChangeFavorite = component::changeFavorite,
-            modifier = modifier
-                .constrainAs(bodyContent){
-                    top.linkTo(carouselTag.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
         )
     }
 }
@@ -249,7 +220,7 @@ private fun ButtonTag(
         Row(
             modifier = Modifier,
             verticalAlignment = Alignment.CenterVertically,
-            ) {
+        ) {
             Text(
                 text = stringResource(id = tag.stringResId),
                 color = contentColor
@@ -325,6 +296,7 @@ private class CatalogComponentPreview : CatalogComponent {
                 items = Item.ITEMS_FAVORITE
             )
         )
+
     override fun sortFeedbackRating() {}
     override fun sortPriceDesc() {}
     override fun sortPriceAsc() {}

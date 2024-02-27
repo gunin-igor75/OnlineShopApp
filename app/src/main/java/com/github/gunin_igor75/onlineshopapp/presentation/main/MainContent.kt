@@ -1,5 +1,6 @@
 package com.github.gunin_igor75.onlineshopapp.presentation.main
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.Crossfade
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -20,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import com.github.gunin_igor75.onlineshopapp.R
 import com.github.gunin_igor75.onlineshopapp.presentation.component.TopBarApp
 import com.github.gunin_igor75.onlineshopapp.presentation.main.basket.BasketContent
@@ -31,15 +31,15 @@ import com.github.gunin_igor75.onlineshopapp.presentation.main.stock.StockConten
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.Pink
 
 
+@SuppressLint("UnusedCrossfadeTargetStateParameter")
 @Composable
 fun MainContent(
     component: MainComponent
 ) {
     val stateScreen = component.screenState.collectAsState()
 
-    Crossfade(targetState = stateScreen, label = "") { screen ->
+    Crossfade(targetState = stateScreen, label = "") {
         Scaffold(
-            topBar = { TopBarApp(titleResId = screen.value.titleResId) },
             bottomBar = {
                 BottomNavigationComponent(
                     screenState = stateScreen,
@@ -86,7 +86,6 @@ fun MainContent(
                 }
             }
         }
-
     }
 }
 

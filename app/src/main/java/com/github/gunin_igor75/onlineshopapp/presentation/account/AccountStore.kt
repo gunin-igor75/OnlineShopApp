@@ -8,6 +8,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.github.gunin_igor75.onlineshopapp.domain.entity.SignData
 import com.github.gunin_igor75.onlineshopapp.domain.entity.User
+import com.github.gunin_igor75.onlineshopapp.domain.usecase.ChangePhoneLengthUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.GetUserByIdUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.GetUserByPhoneUseCase
 import com.github.gunin_igor75.onlineshopapp.domain.usecase.InsertUserUseCase
@@ -18,7 +19,6 @@ import com.github.gunin_igor75.onlineshopapp.presentation.account.AccountStore.L
 import com.github.gunin_igor75.onlineshopapp.presentation.account.AccountStore.State
 import com.github.gunin_igor75.onlineshopapp.presentation.main.OpenReason
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 interface AccountStore : Store<Intent, State, Label> {
@@ -37,35 +37,35 @@ interface AccountStore : Store<Intent, State, Label> {
         val nameState: NameState,
         val lastnameState: LastnameState,
         val phoneState: PhoneState,
+        val buttonState: ButtonState,
         val saveUserState: SaveUserState,
-        val isActiveButton: Boolean =
-            (!nameState.isError && !lastnameState.isError && !phoneState.isError) &&
-                    (nameState.name.isNotEmpty() && lastnameState.lastname.isNotEmpty() && phoneState.phone.isNotEmpty())
-
     ) {
         data class NameState(
             val name: String,
-            val isError: Boolean
+            val isError: Boolean,
         )
 
         data class LastnameState(
             val lastname: String,
-            val isError: Boolean
+            val isError: Boolean,
         )
 
         data class PhoneState(
             val phone: String,
-            val isError: Boolean
+            val isError: Boolean,
+        )
+
+        data class ButtonState(
+            val enabled: Boolean,
         )
 
         data class SaveUserState(
-            val isError: Boolean
+            val isError: Boolean,
         )
     }
 
     sealed interface Label {
         data class ClickSaveUser(val user: User, val openReason: OpenReason) : Label
-
     }
 }
 
@@ -73,17 +73,18 @@ class AccountStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val insertUserUseCase: InsertUserUseCase,
     private val getUserByIdUseCase: GetUserByIdUseCase,
-    private val getUserByPhoneUseCase: GetUserByPhoneUseCase
+    private val getUserByPhoneUseCase: GetUserByPhoneUseCase,
+    private val changePhoneLengthUseCase: ChangePhoneLengthUseCase,
 ) {
 
     fun create(): AccountStore =
         object : AccountStore, Store<Intent, State, Label> by storeFactory.create(
             name = "AccountStore",
             initialState = State(
-                isActiveButton = false,
                 nameState = State.NameState("", false),
                 lastnameState = State.LastnameState("", false),
                 phoneState = State.PhoneState("", false),
+                buttonState = State.ButtonState(false),
                 saveUserState = State.SaveUserState(false)
             ),
             bootstrapper = BootstrapperImpl(),
@@ -98,6 +99,7 @@ class AccountStoreFactory @Inject constructor(
         data class ChangeName(val name: String, val isError: Boolean) : Msg
         data class ChangeLastname(val lastname: String, val isError: Boolean) : Msg
         data class ChangePhone(val phone: String, val isError: Boolean) : Msg
+        data class ButtonState(val enabled: Boolean) : Msg
         data object ClearName : Msg
         data object ClearLastname : Msg
         data object ClearPhone : Msg
@@ -121,6 +123,11 @@ class AccountStoreFactory @Inject constructor(
                             isError = isError
                         )
                     )
+                    val state = getState()
+                    val enabled = !isError
+                            && (!state.lastnameState.isError && state.lastnameState.lastname.isNotEmpty())
+                            && (!state.phoneState.isError && state.phoneState.phone.isNotEmpty())
+                    dispatch(Msg.ButtonState(enabled))
                 }
 
                 is Intent.ChangeLastname -> {
@@ -132,6 +139,11 @@ class AccountStoreFactory @Inject constructor(
                             isError = isError
                         )
                     )
+                    val state = getState()
+                    val enabled = !isError
+                            && (!state.nameState.isError && state.nameState.name.isNotEmpty())
+                            && (!state.phoneState.isError && state.phoneState.phone.isNotEmpty())
+                    dispatch(Msg.ButtonState(enabled))
                 }
 
                 is Intent.ChangePhone -> {
@@ -143,18 +155,26 @@ class AccountStoreFactory @Inject constructor(
                             isError = isError
                         )
                     )
+                    val state = getState()
+                    val enabled = !isError
+                            && (!state.lastnameState.isError && state.lastnameState.lastname.isNotEmpty())
+                            && (!state.nameState.isError && state.nameState.name.isNotEmpty())
+                    dispatch(Msg.ButtonState(enabled))
                 }
 
                 Intent.ClearLastname -> {
                     dispatch(Msg.ClearLastname)
+                    dispatch(Msg.ButtonState(false))
                 }
 
                 Intent.ClearName -> {
                     dispatch(Msg.ClearName)
+                    dispatch(Msg.ButtonState(false))
                 }
 
                 Intent.ClearPhone -> {
                     dispatch(Msg.ClearPhone)
+                    dispatch(Msg.ButtonState(false))
                 }
 
                 is Intent.ClickSaveUser -> {
@@ -164,6 +184,7 @@ class AccountStoreFactory @Inject constructor(
                         lastname = state.lastnameState.lastname,
                         phone = state.phoneState.phone
                     )
+                    changePhone(signData)
                     scope.launch {
                         val user = getUserByPhoneUseCase(signData.phone)
                         if (user == null) {
@@ -178,8 +199,21 @@ class AccountStoreFactory @Inject constructor(
                             return@launch publish(Label.ClickSaveUser(user, OpenReason.REPEATED))
                         }
                         dispatch(Msg.LogInError(true))
+                        dispatch(Msg.ButtonState(false))
                     }
                 }
+            }
+        }
+
+        private fun changePhone(signData: SignData) {
+            val isValid = changePhoneLengthUseCase(signData.phone)
+            if (!isValid) {
+                dispatch(
+                    Msg.ChangePhone(
+                        phone = signData.phone,
+                        isError = true
+                    )
+                )
             }
         }
     }
@@ -216,31 +250,33 @@ class AccountStoreFactory @Inject constructor(
 
                 Msg.ClearLastname -> {
                     copy(
-                        isActiveButton = false,
                         lastnameState = State.LastnameState(lastname = "", isError = false)
                     )
                 }
 
                 Msg.ClearName -> {
                     copy(
-                        isActiveButton = false,
                         nameState = State.NameState(name = "", isError = false)
                     )
                 }
 
                 Msg.ClearPhone -> {
                     copy(
-                        isActiveButton = false,
                         phoneState = State.PhoneState(phone = "", isError = false)
                     )
                 }
 
                 is Msg.LogInError -> {
                     copy(
-                        isActiveButton = false,
                         saveUserState = State.SaveUserState(
                             isError = msg.isError
                         )
+                    )
+                }
+
+                is Msg.ButtonState -> {
+                    copy(
+                        buttonState = State.ButtonState(msg.enabled)
                     )
                 }
             }

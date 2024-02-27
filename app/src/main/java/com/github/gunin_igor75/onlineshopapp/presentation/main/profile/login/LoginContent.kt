@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.gunin_igor75.onlineshopapp.R
 import com.github.gunin_igor75.onlineshopapp.domain.entity.User
+import com.github.gunin_igor75.onlineshopapp.presentation.component.TopBarApp
 import com.github.gunin_igor75.onlineshopapp.presentation.extentions.convertPhone
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.Grey
 import com.github.gunin_igor75.onlineshopapp.presentation.ui.theme.GreyLight
@@ -52,9 +53,9 @@ fun LoginContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp)
-
+            .padding(horizontal = 16.dp)
     ) {
+        TopBarApp(titleResId = R.string.title_profile_top_bar)
         TitleItem(
             iconLeftResId = R.drawable.ic_account__active,
             contentDescriptionIconLeft = R.string.icon_account_description,
@@ -231,7 +232,7 @@ fun LoginItemPreview() {
 }
 
 
-@Preview(showBackground = true)
+@Preview(showSystemUi = true)
 @Composable
 fun LoginContentPreview() {
     LoginContent(component = LoginComponentPreview())

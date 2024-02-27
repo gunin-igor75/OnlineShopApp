@@ -10,4 +10,5 @@ interface UserRepository {
     suspend fun getUserById(userId: Long): User?
     val currentUser: StateFlow<Long>
     suspend fun deleteUser(userId: Long)
+    fun checkPhoneLength(phone: String): Boolean
 }

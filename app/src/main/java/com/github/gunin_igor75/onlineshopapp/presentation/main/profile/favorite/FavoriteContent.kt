@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.github.gunin_igor75.onlineshopapp.R
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
 import com.github.gunin_igor75.onlineshopapp.presentation.component.CardItem
@@ -184,5 +185,6 @@ private class FavoriteComponentPreview : FavoriteComponent {
     override fun onClickBack() {}
     override fun onClickItem(item: Item) {
     }
+
     override fun onChangeFavorite(item: Item) {}
 }
