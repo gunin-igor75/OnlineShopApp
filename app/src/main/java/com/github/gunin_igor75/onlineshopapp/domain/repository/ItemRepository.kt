@@ -19,6 +19,5 @@ interface ItemRepository {
     suspend fun saveFavoriteItem(userId: Long, itemId: String)
     fun observeIsFavorite(userId: Long, itemId: String): Flow<Boolean>
     fun getFavorites(userId: Long): Flow<List<Item>>
-    suspend fun deleteAllInfo()
     fun getCountFavorite(userId: Long): Flow<String>
 }

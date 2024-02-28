@@ -27,7 +27,8 @@ class DefaultMainComponent @AssistedInject constructor(
     private val defaultLoginFavoriteDetailsComponent: DefaultLoginFavoriteDetailsComponent.Factory,
     @Assisted("user") private val user: User,
     @Assisted("openReason") private val openReason: OpenReason,
-    @Assisted("componentContext") componentContext: ComponentContext
+    @Assisted("onLogoutClicked") private val onLogoutClicked: () -> Unit,
+    @Assisted("componentContext") componentContext: ComponentContext,
 ) : MainComponent, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<ChildConfig>()
@@ -65,7 +66,7 @@ class DefaultMainComponent @AssistedInject constructor(
 
     private fun child(
         config: ChildConfig,
-        componentContext: ComponentContext
+        componentContext: ComponentContext,
     ): MainComponent.Child {
         return when (config) {
             is ChildConfig.Basket -> {
@@ -89,6 +90,7 @@ class DefaultMainComponent @AssistedInject constructor(
             is ChildConfig.LoginFavoriteDetails -> {
                 val component = defaultLoginFavoriteDetailsComponent.create(
                     user = config.user,
+                    onLogoutClicked = onLogoutClicked,
                     componentContext = componentContext
                 )
                 MainComponent.Child.LoginFavoriteDetailsChild(component)
@@ -133,7 +135,8 @@ class DefaultMainComponent @AssistedInject constructor(
         fun create(
             @Assisted("user") user: User,
             @Assisted("openReason") openReason: OpenReason,
-            @Assisted("componentContext") componentContext: ComponentContext
+            @Assisted("onLogoutClicked") onLogoutClicked: () -> Unit,
+            @Assisted("componentContext") componentContext: ComponentContext,
         ): DefaultMainComponent
     }
 }

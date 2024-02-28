@@ -2,7 +2,6 @@ package com.github.gunin_igor75.onlineshopapp.data.repository
 
 import android.content.Context
 import androidx.compose.runtime.mutableStateOf
-import androidx.room.Transaction
 import com.github.gunin_igor75.onlineshopapp.R
 import com.github.gunin_igor75.onlineshopapp.data.local.db.ItemDao
 import com.github.gunin_igor75.onlineshopapp.data.local.model.UserItemDbModel
@@ -22,14 +21,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ItemRepositoryImpl @Inject constructor(
     private val itemDao: ItemDao,
     private val userRepo: UserRepository,
-    private val context: Context
+    private val context: Context,
 ) : ItemRepository {
 
     private var _items: MutableList<Item>
@@ -128,35 +126,26 @@ class ItemRepositoryImpl @Inject constructor(
     override fun observeIsFavorite(userId: Long, itemId: String): Flow<Boolean> =
         itemDao.observeIsFavorite(userId, itemId)
 
+
     override fun getFavorites(userId: Long): Flow<List<Item>> = flow {
-        val favorites = itemDao.getItemsIdIsFavorite(userId)
-        favorites.collect { itemId ->
-            val result = mutableListOf<Item>()
-            _items.forEach { item ->
-                if (item.id == itemId) {
-                    result.add(item)
-                }
-            }
-            emit(result)
+        itemDao.getItemsIdIsFavorite(userId).collect { favorites ->
+            val temp = _items.filter { favorites.contains(it.id) }
+            emit(temp)
         }
     }
+
 
     override fun getCountFavorite(userId: Long): Flow<String> =
         itemDao.getCountFavorite(userId)
             .map { transformString(it) }
 
-    @Transaction
-    override suspend fun deleteAllInfo() {
-        val currentUserId = userRepo.currentUser.value
-        itemDao.deleteUserSItems(currentUserId)
-        userRepo.deleteUser(currentUserId)
-    }
 
-    private fun getFilterList(): List<Item>  =
-        when(val filter = filterState.value){
+    private fun getFilterList(): List<Item> =
+        when (val filter = filterState.value) {
             FilterState.ALL -> {
                 _items.toList()
             }
+
             else -> {
                 _items.filter { it.tags.contains(filter.param) }
             }
@@ -179,10 +168,12 @@ class ItemRepositoryImpl @Inject constructor(
 
     private suspend fun setupFavorite() {
         val currentUser = userRepo.currentUser.value
-        val favorites = itemDao.getItemsIdIsFavorite(currentUser).toList()
-        (0 until _items.size).forEach { index ->
-            if (favorites.contains(_items[index].id)) {
-                _items[index] = _items[index].copy(isFavorite = true)
+        val favorites = itemDao.getItemsIdIsFavorite(currentUser)
+        favorites.collect {
+            (0 until _items.size).forEach { index ->
+                if (it.contains(_items[index].id)) {
+                    _items[index] = _items[index].copy(isFavorite = true)
+                }
             }
         }
     }

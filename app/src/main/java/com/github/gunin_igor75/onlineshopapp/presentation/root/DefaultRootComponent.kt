@@ -6,6 +6,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
 import com.github.gunin_igor75.onlineshopapp.domain.entity.User
 import com.github.gunin_igor75.onlineshopapp.presentation.account.DefaultAccountComponent
@@ -19,7 +20,7 @@ import kotlinx.parcelize.Parcelize
 class DefaultRootComponent @AssistedInject constructor(
     private val defaultAccountComponent: DefaultAccountComponent.Factory,
     private val defaultMainComponent: DefaultMainComponent.Factory,
-    @Assisted("componentContext") componentContext: ComponentContext
+    @Assisted("componentContext") componentContext: ComponentContext,
 ) : RootComponent, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
@@ -33,14 +34,14 @@ class DefaultRootComponent @AssistedInject constructor(
 
     private fun child(
         config: Config,
-        componentContext: ComponentContext
+        componentContext: ComponentContext,
     ): RootComponent.Child {
         return when (config) {
             Config.Account -> {
                 val component = defaultAccountComponent.create(
                     componentContext = componentContext,
                     onSaveUserClicked = { user, openReason ->
-                        navigation.push(Config.Main(user, openReason))
+                        navigation.replaceAll(Config.Main(user, openReason))
                     }
                 )
                 RootComponent.Child.Account(component)
@@ -50,6 +51,9 @@ class DefaultRootComponent @AssistedInject constructor(
                 val component = defaultMainComponent.create(
                     user = config.user,
                     openReason = config.openReason,
+                    onLogoutClicked = {
+                        navigation.replaceAll(Config.Account)
+                    },
                     componentContext = componentContext
                 )
                 RootComponent.Child.Main(component)
@@ -60,6 +64,7 @@ class DefaultRootComponent @AssistedInject constructor(
     private sealed interface Config : Parcelable {
         @Parcelize
         data object Account : Config
+
         @Parcelize
         data class Main(
             val user: User,
@@ -70,7 +75,7 @@ class DefaultRootComponent @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(
-            @Assisted("componentContext") componentContext: ComponentContext
+            @Assisted("componentContext") componentContext: ComponentContext,
         ): DefaultRootComponent
     }
 }

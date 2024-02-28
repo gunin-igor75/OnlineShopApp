@@ -25,7 +25,8 @@ class DefaultLoginFavoriteDetailsComponent @AssistedInject constructor(
     private val defaultFavoriteComponent: DefaultFavoriteComponent.Factory,
     private val defaultDetailsComponent: DefaultDetailsComponent.Factory,
     @Assisted("user") private val user: User,
-    @Assisted("componentContext") componentContext: ComponentContext
+    @Assisted("onLogoutClicked") private val onLogoutClicked: () -> Unit,
+    @Assisted("componentContext") componentContext: ComponentContext,
 ) : LoginFavoriteDetailsComponent, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<ChildConfig>()
@@ -40,7 +41,7 @@ class DefaultLoginFavoriteDetailsComponent @AssistedInject constructor(
 
     private fun child(
         config: ChildConfig,
-        componentContext: ComponentContext
+        componentContext: ComponentContext,
     ): LoginFavoriteDetailsComponent.Child {
         return when (config) {
             is ChildConfig.Favorite -> {
@@ -60,9 +61,7 @@ class DefaultLoginFavoriteDetailsComponent @AssistedInject constructor(
             is ChildConfig.Login -> {
                 val component = defaultLoginComponent.create(
                     user = config.user,
-                    onLogoutClicked = {
-                        navigation.popTo(0)
-                    },
+                    onLogoutClicked = onLogoutClicked,
                     onFavoriteClicked = {
                         navigation.push(ChildConfig.Favorite(config.user))
                     },
@@ -101,7 +100,8 @@ class DefaultLoginFavoriteDetailsComponent @AssistedInject constructor(
     interface Factory {
         fun create(
             @Assisted("user") user: User,
-            @Assisted("componentContext") componentContext: ComponentContext
+            @Assisted("onLogoutClicked") onLogoutClicked: () -> Unit,
+            @Assisted("componentContext") componentContext: ComponentContext,
         ): DefaultLoginFavoriteDetailsComponent
     }
 }

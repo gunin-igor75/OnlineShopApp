@@ -45,7 +45,7 @@ class LoginStoreFactory @Inject constructor(
                 countProduct = ""
             ),
             bootstrapper = BootstrapperImpl(user.id),
-            executorFactory = ::ExecutorImpl,
+            executorFactory = {ExecutorImpl(user.id)},
             reducer = ReducerImpl
         ) {}
 
@@ -68,13 +68,15 @@ class LoginStoreFactory @Inject constructor(
         }
     }
 
-    private inner class ExecutorImpl : CoroutineExecutor<Intent, Action, State, Msg, Label>() {
+    private inner class ExecutorImpl(
+        private val userId: Long
+    ) : CoroutineExecutor<Intent, Action, State, Msg, Label>() {
         override fun executeIntent(intent: Intent, getState: () -> State) {
             when (intent) {
 
                 Intent.ClickLogOut -> {
                     scope.launch {
-                        deleteAllInfoUseCase()
+                        deleteAllInfoUseCase(userId)
                         publish(Label.ClickLogOut)
                     }
                 }
