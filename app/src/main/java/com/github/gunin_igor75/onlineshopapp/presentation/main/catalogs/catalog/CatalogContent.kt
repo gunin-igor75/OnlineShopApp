@@ -49,7 +49,7 @@ typealias OnClick = () -> Unit
 @Composable
 fun CatalogContent(
     modifier: Modifier = Modifier,
-    component: CatalogComponent
+    component: CatalogComponent,
 ) {
     val state by component.model.collectAsState()
 
@@ -74,7 +74,10 @@ fun CatalogContent(
             Spacer(modifier = Modifier.weight(1f))
             FilterSpinner()
         }
-        CarouselTag(tags = tags)
+        CarouselTag(
+            tags = tags,
+            onclick = component::choseAll
+        )
         ProductsComponent(
             items = state.items,
             onClickItem = component::onItem,
@@ -86,7 +89,7 @@ fun CatalogContent(
 @Composable
 private fun SortSpinner(
     modifier: Modifier = Modifier,
-    tags: List<Tag>
+    tags: List<Tag>,
 ) {
     val expanded = rememberSaveable {
         mutableStateOf(false)
@@ -145,7 +148,7 @@ private fun SortSpinner(
 
 @Composable
 private fun FilterSpinner(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.wrapContentWidth()) {
         Row(
@@ -172,7 +175,8 @@ private fun FilterSpinner(
 @Composable
 private fun CarouselTag(
     modifier: Modifier = Modifier,
-    tags: List<Tag>
+    onclick: OnClick,
+    tags: List<Tag>,
 ) {
     var selectedIndex = rememberSaveable {
         mutableStateOf(1)
@@ -190,7 +194,8 @@ private fun CarouselTag(
             ButtonTag(
                 tag = it,
                 state = selectedIndex,
-                selected = selected
+                selected = selected,
+                onclick = onclick
             )
         }
     }
@@ -201,7 +206,8 @@ private fun ButtonTag(
     modifier: Modifier = Modifier,
     tag: Tag,
     state: MutableState<Int>,
-    selected: Boolean
+    onclick: OnClick,
+    selected: Boolean,
 ) {
     val contentColor = if (selected) MaterialTheme.colorScheme.background else Grey
     val containerColor = if (selected) Grey else GreyLight
@@ -217,25 +223,29 @@ private fun ButtonTag(
             },
 
         ) {
-        Row(
-            modifier = Modifier,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+        Row {
             Text(
+                modifier = Modifier.alignByBaseline(),
                 text = stringResource(id = tag.stringResId),
                 color = contentColor
             )
-            Icon(
-                modifier = Modifier
-                    .clickable { state.value = 0 },
-                imageVector = ImageVector.vectorResource(
-                    id = R.drawable.ic_small_close_default
-                ),
-                contentDescription = stringResource(
-                    id = R.string.button_clear_value_description
-                ),
-                tint = contentColor
-            )
+            if (state.value == tag.index) {
+                Icon(
+                    modifier = Modifier
+                        .alignByBaseline()
+                        .clickable {
+                            state.value = 0
+                            onclick()
+                        },
+                    imageVector = ImageVector.vectorResource(
+                        id = R.drawable.ic_small_close_default
+                    ),
+                    contentDescription = stringResource(
+                        id = R.string.button_clear_value_description
+                    ),
+                    tint = contentColor
+                )
+            }
         }
     }
 }
@@ -246,7 +256,8 @@ private fun ButtonTagPreview() {
     ButtonTag(
         tag = Tag(0, R.string.all, {}),
         state = mutableStateOf(0),
-        selected = false
+        selected = false,
+        onclick = {}
     )
 }
 
@@ -259,8 +270,9 @@ private fun CarouselTagPreview() {
             Tag(2, R.string.face, {}),
             Tag(3, R.string.body, {}),
             Tag(4, R.string.suntan, {}),
-            Tag(5, R.string.mask, {})
-        )
+            Tag(5, R.string.mask, {}),
+        ),
+        onclick = {}
     )
 }
 
@@ -312,5 +324,5 @@ private class CatalogComponentPreview : CatalogComponent {
 private data class Tag(
     val index: Int,
     val stringResId: Int,
-    val onclick: OnClick
+    val onclick: OnClick,
 )

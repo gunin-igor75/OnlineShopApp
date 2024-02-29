@@ -6,12 +6,10 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
-import com.arkivanov.decompose.router.stack.popTo
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
 import com.github.gunin_igor75.onlineshopapp.domain.entity.User
-import com.github.gunin_igor75.onlineshopapp.presentation.login_favorite_details.LoginFavoriteDetailsComponent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.details.DefaultDetailsComponent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.profile.favorite.DefaultFavoriteComponent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.profile.login.DefaultLoginComponent

@@ -1,6 +1,5 @@
 package com.github.gunin_igor75.onlineshopapp.presentation.account
 
-import com.github.gunin_igor75.onlineshopapp.domain.entity.User
 import kotlinx.coroutines.flow.StateFlow
 
 interface AccountComponent {

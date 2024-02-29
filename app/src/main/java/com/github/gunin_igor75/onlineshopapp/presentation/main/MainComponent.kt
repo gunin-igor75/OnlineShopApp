@@ -3,7 +3,7 @@ package com.github.gunin_igor75.onlineshopapp.presentation.main
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.CatalogDetailsComponent
-import com.github.gunin_igor75.onlineshopapp.presentation.login_favorite_details.LoginFavoriteDetailsComponent
+import com.github.gunin_igor75.onlineshopapp.presentation.main.profile.LoginFavoriteDetailsComponent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.basket.BasketComponent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.home.HomeComponent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.stock.StockComponent

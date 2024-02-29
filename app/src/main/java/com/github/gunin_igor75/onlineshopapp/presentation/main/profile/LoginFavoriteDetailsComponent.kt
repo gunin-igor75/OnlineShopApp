@@ -1,4 +1,4 @@
-package com.github.gunin_igor75.onlineshopapp.presentation.login_favorite_details
+package com.github.gunin_igor75.onlineshopapp.presentation.main.profile
 
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value

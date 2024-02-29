@@ -1,4 +1,4 @@
-package com.github.gunin_igor75.onlineshopapp.presentation.catalog_details
+package com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs
 
 import android.os.Parcelable
 import com.arkivanov.decompose.ComponentContext
@@ -10,7 +10,6 @@ import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.github.gunin_igor75.onlineshopapp.domain.entity.Item
 import com.github.gunin_igor75.onlineshopapp.domain.entity.User
-import com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.CatalogDetailsComponent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.catalog.DefaultCatalogComponent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.details.DefaultDetailsComponent
 import dagger.assisted.Assisted

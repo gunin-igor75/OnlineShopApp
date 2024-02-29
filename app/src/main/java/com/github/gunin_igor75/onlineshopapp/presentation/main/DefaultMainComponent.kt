@@ -1,16 +1,14 @@
 package com.github.gunin_igor75.onlineshopapp.presentation.main
 
 import android.os.Parcelable
-import androidx.compose.runtime.MutableState
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.github.gunin_igor75.onlineshopapp.domain.entity.User
-import com.github.gunin_igor75.onlineshopapp.presentation.catalog_details.DefaultCatalogDetailsComponent
+import com.github.gunin_igor75.onlineshopapp.presentation.main.catalogs.DefaultCatalogDetailsComponent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.profile.DefaultLoginFavoriteDetailsComponent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.basket.DefaultBasketComponent
 import com.github.gunin_igor75.onlineshopapp.presentation.main.home.DefaultHomeComponent
